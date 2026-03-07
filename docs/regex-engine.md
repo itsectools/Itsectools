@@ -1,6 +1,6 @@
-# Regex Engine Tools — Complete Guide
+# DLP Regex Builder — Complete Guide
 
-> **URL:** [itsectools.com/dlp](https://itsectools.com/dlp) → Regex Engine Tools tab
+> **URL:** [itsectools.com/dlp](https://itsectools.com/dlp) → DLP Regex Builder tab
 
 ## Overview
 

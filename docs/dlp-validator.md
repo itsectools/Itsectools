@@ -38,13 +38,14 @@ Generate dynamic documents with realistic sensitive data for DLP testing. Each d
 
 ## 3. Raw Text POST
 
-Paste or type text containing sensitive data and send it as a raw HTTP POST request. Tests whether your DLP scans inline text — not just file attachments.
+Paste or type text containing sensitive data and send it as a raw HTTP or HTTPS POST request. Tests whether your DLP scans inline text — not just file attachments.
+By selecting **HTTP**, the platform proxies the payload unencrypted over Port 80, ensuring inline network firewalls can inspect the egress traffic.
 
 **How to use:**
 1. Switch to the **Text POST** tab
 2. Enter text containing sensitive data (e.g., `SSN: 123-45-6789`)
-3. Click **Send POST**
-4. If your DLP inspects web form submissions, it should detect and block the request
+3. Select your protocol (HTTP or HTTPS) and click **Send POST**
+4. If your DLP inspects data-in-motion exfiltration, it should detect and block the request
 
 ---
 
@@ -65,7 +66,7 @@ Upload any document to deep-scan for sensitivity labels, classification markings
 
 ---
 
-## 5. Advanced Payload Generator
+## 5. DLP Test Data Generator
 
 Generate real test files that challenge your DLP engine's inspection depth.
 
@@ -80,5 +81,5 @@ Generate real test files that challenge your DLP engine's inspection depth.
 
 ## Related
 
-- [Regex Engine Tools Guide](regex-engine.md)
+- [DLP Regex Builder Guide](regex-engine.md)
 - [Open DLP Validator →](https://itsectools.com/dlp)
