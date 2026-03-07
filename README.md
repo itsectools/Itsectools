@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CyberShield - Security Testing Suite
 
-## Getting Started
+A comprehensive web application for testing NGFW, DLP, and Threat Protection capabilities.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 1. Home / Network Diagnostics
+- **Public IP Detection**: Displays your current public IP.
+- **Network Stats**: Measures Latency, Jitter, and Packet Loss to the server.
+- **Fragmentation Analysis**: Visualizes Path MTU discovery and recommends optimal MSS values.
+- **Visual Map**: Animated network topology map showing packet flow.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. DLP (Data Loss Prevention) Tools
+- **Text Analysis**: Post text data over HTTP and HTTPS to verify keyword blocking (e.g., SSN patterns, Credit Card numbers) and test unencrypted egress detection across different ports.
+- **DLP Payload Generation**: Generate and exfiltrate compliance test data (PII, PCI, PHI) to test your endpoint DLP.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. NGFW (Next-Gen Firewall) Validation
+- **Evasion Tests**: Simulates obfuscated payloads (Base64) to test firewall inspection.
+- **IPS Tests**: Simulates SQL Injection and XSS attacks.
+- **C2C Communication**: Simulates botnet command & control traffic to specific endpoints.
+- **Protocol Validation**: Tests standard HTTP compliance.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Threat Protection Lab
+- **EICAR Test File**: Download standard EICAR test file.
+- **Malware Simulation**: Download benign files with malware-like signatures for testing AV detection.
+- **Ransomware Simulator**: Download harmless scripts that mimic ransomware behavior.
 
-## Learn More
+## How to Run
 
-To learn more about Next.js, take a look at the following resources:
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Deploy on Vercel
+## Tech Stack
+- **Framework**: Next.js 15 (App Router)
+- **Styling**: Vanilla CSS (CSS Modules & Global CSS) with "Premium" Dark Mode.
+- **Visualization**: HTML5 Canvas for Network Map.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Disclaimer
+This tool is for **educational and testing purposes only**. The "malware" files provided are harmless simulations.

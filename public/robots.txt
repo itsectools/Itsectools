@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://itsectools.com/sitemap.xml
+
+# AI Search Optimization
+Allow: /llms.txt

@@ -1,0 +1,89 @@
+# ITSecTools - Security Validation Suite
+
+## Overview
+ITSecTools is a free, professional-grade security validation toolkit designed to help organizations simulate cyber threats, validate Data Loss Prevention (DLP) policies, check file classifications, build vendor-specific regex patterns, and stress-test Next-Generation Firewalls (NGFW) directly from the browser. All testing and analysis occur locally or via ephemeral stateless functions, ensuring privacy and safe simulation.
+
+## Why ITSecTools?
+Unlike generic security testing tools, ITSecTools provides:
+- **Browser-native testing** — no agents, installs, or cloud accounts required.
+- **Vendor-specific output** — DLP regex patterns are optimized per-vendor engine, not generic one-size-fits-all.
+- **Evasion-grade payloads** — tests go beyond basic pattern matching to include Base64 encoding, renamed extensions, nested archives, and password-protected files.
+- **MITRE ATT&CK alignment** — kill chain simulations map directly to documented technique IDs.
+- **Privacy-first** — all analysis is local or ephemeral. No data is stored or transmitted.
+
+## Key Features
+
+### 1. DLP Validator (/dlp)
+Test your Data Loss Prevention (DLP) solution by:
+- **Dynamic Document Generation:** Dynamically generates fresh PDF, DOCX, XLSX, and CSV files containing PII, PCI, or PHI on the fly, preventing static hash fingerprinting.
+- **Multi-Protocol Testing:** Test data leakage simulations across HTTP, HTTPS, and FTP to ensure comprehensive inspection across different ports.
+- **Data-in-Motion Exfiltration Testing:** Tests data-in-motion by simulating raw text data leakage via both HTTP (unencrypted, Port 80 egress simulation) and HTTPS, ensuring inline network inspection catches raw inputs, not just file attachments.
+
+**File Label Identifier & Classification Checker (Unique):**
+Most tools stop at file type detection. ITSecTools goes further by deep-scanning uploaded documents to detect sensitivity labels and classification markings:
+- **DOCX/XLSX Classification Extraction:** Parses the ZIP archive structure to locate `docProps/custom.xml` and reads Microsoft Information Protection (MIP) classification labels (e.g., Confidential, Internal, Public, Top Secret) — no external libraries required.
+- **PDF Metadata Dictionary Scanning:** Extracts classification and label properties directly from PDF metadata dictionaries using raw binary parsing.
+- **DLP Pattern Matching:** If no explicit label is found, performs content-level analysis for PII (SSN patterns), PCI (credit card numbers), and keyword-based classification (confidential, restricted, proprietary, etc.).
+- **File Hashing:** Computes MD5 and SHA-256 hashes for file integrity verification and threat intel lookups.
+- **Sensitivity Color Coding:** Results are visually color-coded — Red for Confidential/Secret, Blue for Internal, Green for Public — with classification tags for audit trail.
+- **Zero-Upload Privacy:** Files are analyzed server-side via ephemeral stateless functions. No file content is stored, logged, or persisted.
+
+**DLP Test Data Generator Toolset (Evasion Testing):**
+The platform features a specialized toolset for testing evasion detection:erates valid documents containing sensitive data saved with fake extensions (e.g., .jpg) to verify True File Typing.
+- **Base64 Encoder/Decoder:** Obfuscates sensitive strings into Base64 format to test native decoding capabilities of inline network appliances.
+- **Password-Protected Archives:** Generates AES-encrypted ZIP files containing sensitive data to test fail-close or fail-open archive inspection policies.
+- **Nested Archives (Archive Depth Limit Testing):** Wraps sensitive data in multiple layers of ZIP compression to test maximum archive extraction depth limits.
+
+**Regex Tools (Vendor-Aware Regex Builder & Translator):**
+- **Regex Creator:** Enter a compliance test data string (e.g., MRN:1234567), auto-analyze its structure into segments (letters, digits, separators), customize match types and quantities, and generate a regex pattern optimized for a specific DLP vendor.
+- **Regex Translator & Tester:** Paste any regex, select a target vendor, and get the pattern translated for that vendor's regex engine. Test it against sample strings with instant match/no-match diagnostics.
+- **10 Vendor Engines Supported:** Forcepoint DLP, Forcepoint DSPM, Symantec DLP, Palo Alto Networks, Zscaler, Netskope, Trellix DLP, Fortinet, Microsoft Purview, and Proofpoint — each with documented engine-specific transformations.
+- **27 Match Types:** Digits, letters (upper/lower), word characters, whitespace, special characters, exact text, character sets, ranges, and more.
+- **Failure Diagnostics:** When a test string doesn't match, the tool progressively walks each regex token against the input and pinpoints exactly which part failed and where.
+- **Plain English Explanations:** Every generated regex includes a step-by-step "How It Works" breakdown in plain language, not regex syntax.
+
+### 2. Threat Generation (/threat-protection)
+Safe malware simulation for rigorously testing network and endpoint security solutions:
+- EICAR Standard Test File (.com, .txt, .zip) — the industry-standard antivirus detection test
+- Heuristic Malware Sample (.exe, .pdf, .doc) for testing behavioral analysis engines
+- Ransomware Simulator (.vbs) to verify ransomware protection policies and behavioral detection
+
+### 3. MITRE ATT&CK Simulator (/mitre)
+Execute a sequential adversary Kill Chain simulating complete attack lifecycles:
+- Initial Access (T1190): Exploit Public-Facing App (Log4j simulation)
+- Execution (T1059.001): PowerShell download cradle attempts
+- Credential Access (T1003.001): OS Credential Dumping (Mimikatz simulation)
+- Exfiltration (T1048.003): Unencrypted Protocol data extraction
+
+### 4. NGFW Tests (/ngfw)
+Verify firewall efficacy against various network attacks and evasions:
+- **IPS Signature Testing:** Run real-time intrusion prevention tests including SQL Injection (SQLi), Cross-Site Scripting (XSS), and Path Traversal attack simulations.
+- **Advanced Evasion Techniques (AET):** Validate firewall inspection capabilities against Log4j header injections, Hex-encoded SQLi, and Shellshock probes.
+- **Command & Control (C2) Simulations:** Test outbound traffic policies using Python Stagers and Web Shell simulators to verify beacon detection.
+- **Out-of-Band (OOB) Exfiltration:** Check for unauthorized data extraction channels by simulating OOB DNS and HTTP data exfiltration.
+- **Protocol Evasion Validation:** Test firewall adherence to RFC standards using Jumbo HTTP Headers and HTTP Method Spoofing techniques.
+
+### 5. Network Pulse (/network-pulse)
+Real-time telemetry, latency analysis, and connection health monitoring:
+- IP Intelligence (ASN, Geolocation, Threat Intel)
+- Latency & Jitter Tracking
+- Path MTU Discovery
+
+## Privacy & Safety
+- **Free to Use**: Tools are available for security researchers and admins at no cost.
+- **Safe Simulation**: All malware samples are benign simulators designed exclusively for detection testing. No real malicious actions are performed.
+- **Privacy First**: Analysis occurs locally or securely via ephemeral stateless functions.
+- **No Data Stored**: No user data is collected, logged, or transmitted to external servers.
+
+## Help & User Guides
+Detailed feature-by-feature documentation for every tool:
+- Threat Protection Guide: https://itsectools.com/help/threat-generation — Malware simulation, evasion techniques, malicious macros.
+- DLP Validator Guide: https://itsectools.com/help/dlp-validator — File uploads, downloads, text POST, metadata checker, regex creator, regex translator, DLP test data generator.
+- NGFW Testing Guide: https://itsectools.com/help/ngfw-testing — IPS signature tests, advanced evasion techniques, C2 beacon simulation, console output interpretation.
+- MITRE ATT&CK Guide: https://itsectools.com/help/mitre-attack — Kill chain concept, T1190, T1059.001, T1003.001, T1048.003 stages, results interpretation.
+- Threat Generation Guide: https://itsectools.com/help/threat-generation — EICAR test files, heuristic malware samples, ransomware simulator.
+- Network Pulse Guide: https://itsectools.com/help/network-pulse — Public IP detection, latency, jitter, packet loss, Path MTU discovery, AI security insights.
+
+## Resources
+- Help Center: https://itsectools.com/help
+- Contact: https://itsectools.com/contact
