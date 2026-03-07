@@ -40,11 +40,11 @@ ITSecTools is a free, browser-based security validation toolkit that lets you te
 
 The most comprehensive free DLP testing tool available. Test your data loss prevention policies across every channel and evasion technique.
 
-### File Transfer Testing
+### Data Leakage Simulation
 - Upload files over **HTTP** (port 80), **HTTPS** (port 443), and **FTP** (port 21) — all from the browser
 - Download dynamically generated test files containing **PII, PCI, and PHI** data in **PDF, DOCX, XLSX, CSV**
 - Every file is unique — prevents static hash fingerprinting
-- **HTTP/S POST Simulation** for testing inline text inspection
+- **HTTP and HTTPS POST Simulation** for testing inline text inspection and data-in-motion exfiltration
 
 ### File Label Identifier & Classification Checker
 - **DOCX/XLSX** — Parses ZIP archive structure to extract MIP classification labels from `docProps/custom.xml`
@@ -68,7 +68,7 @@ The most comprehensive free DLP testing tool available. Test your data loss prev
 Build and translate DLP regex patterns across 10 vendor engines.
 
 ### Regex Creator
-- Paste sample data → auto-analyze into segments → customize 27 match types → generate vendor-optimized regex
+- Paste compliance test data → auto-analyze into segments → customize 27 match types → generate vendor-optimized regex
 - Plain English explanation of every generated pattern
 
 ### Regex Translator & Tester
