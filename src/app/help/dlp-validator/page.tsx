@@ -32,6 +32,7 @@ export default function DLPGuide() {
                     <li><a href="#regex-creator" style={{ color: 'inherit', textDecoration: 'none' }}>Regex Creator</a></li>
                     <li><a href="#regex-translator" style={{ color: 'inherit', textDecoration: 'none' }}>Regex Translator</a></li>
                     <li><a href="#advanced-payloads" style={{ color: 'inherit', textDecoration: 'none' }}>DLP Test Data Generator</a></li>
+                    <li><a href="#endpoint-dlp" style={{ color: 'inherit', textDecoration: 'none' }}>Unique: Endpoint DLP Agent Detection</a></li>
                 </ol>
             </section>
 
@@ -74,13 +75,29 @@ export default function DLPGuide() {
                     </ul>
                 </div>
 
-                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
+                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', marginBottom: '1rem', border: '1px solid #E2E8F0' }}>
                     <h3 style={{ fontSize: '1rem', color: '#0F172A', marginBottom: '0.75rem' }}>Available File Formats</h3>
                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                         {['PDF', 'DOCX', 'XLSX', 'CSV'].map(fmt => (
                             <span key={fmt} style={{ background: '#EEF2FF', color: '#4338CA', padding: '0.3rem 0.75rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 500 }}>{fmt}</span>
                         ))}
                     </div>
+                </div>
+
+                <div style={{ background: '#EFF6FF', borderRadius: '8px', padding: '1.25rem', border: '1px solid #93C5FD', fontSize: '0.9rem', color: '#1E40AF', marginBottom: '1rem' }}>
+                    <strong>🔍 Proxy Mode DLP Validation</strong>
+                    <p style={{ margin: '0.75rem 0 0 0', lineHeight: 1.6 }}>
+                        ITSecTools validates DLP configured in <strong>proxy/inline mode</strong> by generating documents with embedded PII, PCI, and PHI data and downloading them over HTTPS. This tests whether your DLP engine can intercept and inspect file content during transit — not just at the endpoint level.
+                    </p>
+                    <ul style={{ margin: '0.5rem 0 0 0', paddingLeft: '1.25rem', lineHeight: 1.8 }}>
+                        <li><strong>CSV</strong> — Plain text with comma-delimited fields. Easily parseable by all DLP engines.</li>
+                        <li><strong>XLSX</strong> — XML-based spreadsheet inside a ZIP archive. Most DLP engines parse this format reliably.</li>
+                        <li><strong>DOCX</strong> — OOXML ZIP archive. The DLP engine must decompress the ZIP, parse <code style={{ background: '#DBEAFE', padding: '0.1rem 0.4rem', borderRadius: '3px' }}>word/document.xml</code>, and extract text content before applying pattern matching.</li>
+                        <li><strong>PDF</strong> — Binary format with text inside content stream objects (often FlateDecode compressed). Requires the DLP engine to parse the PDF structure, decompress streams, and extract text.</li>
+                    </ul>
+                    <p style={{ margin: '0.5rem 0 0 0', lineHeight: 1.6 }}>
+                        Each download is <strong>dynamically generated</strong> with fresh data to prevent static hash fingerprinting. If your proxy DLP blocks the download, it confirms the engine is performing real-time content inspection on that file format. Testing all four formats reveals the depth of your DLP engine&apos;s file parsing capabilities.
+                    </p>
                 </div>
             </section>
 
@@ -210,6 +227,32 @@ export default function DLPGuide() {
                             Wraps sensitive data inside multiple ZIP layers (ZIP-in-ZIP-in-ZIP). Tests your DLP&apos;s <strong>maximum archive extraction depth</strong> — most solutions stop at 2-3 levels.
                         </p>
                     </div>
+                </div>
+            </section>
+
+            {/* Unique Capability: Endpoint DLP Detection */}
+            <section id="endpoint-dlp" style={{ marginBottom: '3rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#0F172A', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '2px solid #EEF2FF' }}>Unique Capability: Endpoint DLP Agent Detection</h2>
+                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1rem' }}>
+                    ITSecTools is the only free online DLP testing tool that can detect and report when an <strong>Endpoint DLP agent</strong> blocks a file upload at the browser level — even when the DLP is configured in <strong>inline/proxy mode</strong>. When an endpoint agent intercepts the upload before data leaves the browser, ITSecTools provides a clear, actionable message:
+                </p>
+
+                <div style={{ background: '#0F172A', borderRadius: '6px', padding: '0.75rem 1rem', marginBottom: '1.25rem', fontFamily: 'monospace', fontSize: '0.85rem', color: '#F87171' }}>
+                    BLOCKED: HTTP Upload intercepted by Endpoint DLP agent before data reached the browser.
+                </div>
+
+                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', marginBottom: '1rem', border: '1px solid #E2E8F0' }}>
+                    <h3 style={{ fontSize: '1rem', color: '#0F172A', marginBottom: '0.75rem' }}>Why This Matters</h3>
+                    <ul style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+                        <li>Most DLP testing tools silently fail or show generic &quot;upload failed&quot; errors — they cannot tell you <strong>why</strong> or <strong>where</strong> the block occurred.</li>
+                        <li>ITSecTools clearly differentiates between <strong>network/proxy DLP blocks</strong> (intercepted during file transmission) and <strong>endpoint DLP blocks</strong> (intercepted before data even leaves the browser).</li>
+                        <li>This helps security teams confirm their endpoint DLP agent is actively enforcing policies, even on machines that also have network-based proxy DLP enabled.</li>
+                        <li>Compatible with <strong>Forcepoint DLP</strong>, <strong>Symantec Endpoint DLP</strong>, and other endpoint DLP agents that operate at the browser level.</li>
+                    </ul>
+                </div>
+
+                <div style={{ background: '#F0FDF4', borderRadius: '8px', padding: '1.25rem', border: '1px solid #86EFAC', fontSize: '0.9rem', color: '#166534' }}>
+                    <strong>Not Available Elsewhere:</strong> Other free DLP testing websites (e.g., dlptest.com) can only validate network/proxy DLP by checking if file transfers are blocked on the wire. They have no ability to detect or report endpoint-level DLP interception. ITSecTools is uniquely designed for organizations running endpoint and network DLP in parallel — giving visibility into both layers from a single test.
                 </div>
             </section>
 

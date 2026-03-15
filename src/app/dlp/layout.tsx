@@ -35,7 +35,9 @@ const jsonLd = {
         'Regex Translator & Tester: Translate any regex into vendor-specific syntax and test it with instant match diagnostics and failure pinpointing.',
         '10 Vendor Engines: Forcepoint DLP, Forcepoint DSPM, Symantec DLP, Palo Alto Networks, Zscaler, Netskope, Trellix DLP, Fortinet, Microsoft Purview, and Proofpoint.',
         'Regex Failure Diagnostics: Pinpoints exactly where a test string fails to match — shows which token broke and what was expected vs. found.',
-        'Plain English Regex Explanations: Every regex includes a step-by-step human-readable breakdown of what it matches.'
+        'Plain English Regex Explanations: Every regex includes a step-by-step human-readable breakdown of what it matches.',
+        'Endpoint DLP Agent Detection (Unique): The only free DLP testing tool that detects and reports when an Endpoint DLP agent (Forcepoint, Symantec) blocks file uploads at the browser level — even in inline/proxy mode. Clearly distinguishes endpoint-level blocks from network/proxy DLP blocks.',
+        'Proxy Mode DLP Validation: Tests DLP configured in proxy/inline mode by downloading dynamically generated documents over HTTPS. Validates whether the proxy DLP engine can parse DOCX (OOXML ZIP), PDF (content streams), XLSX, and CSV formats to detect embedded PII/PCI/PHI data.'
     ]
 };
 
@@ -67,6 +69,16 @@ const faqJsonLd = {
             '@type': 'Question',
             name: 'Can I check document classification labels and sensitivity markings with this tool?',
             acceptedAnswer: { '@type': 'Answer', text: 'Yes. The File Label Identifier deep-scans uploaded DOCX and XLSX files by parsing their ZIP archive structure to extract Microsoft Information Protection (MIP) classification labels from docProps/custom.xml. For PDFs, it reads classification properties directly from the metadata dictionary. If no explicit label is found, it performs content-level DLP pattern matching for PII (SSN), PCI (credit card numbers), and keyword-based classification. Results are color-coded by sensitivity level with MD5 and SHA-256 hashes for verification.' }
+        },
+        {
+            '@type': 'Question',
+            name: 'Can ITSecTools detect Endpoint DLP agents blocking uploads?',
+            acceptedAnswer: { '@type': 'Answer', text: 'Yes. ITSecTools is the only free DLP testing tool that can detect and report when an Endpoint DLP agent (such as Forcepoint or Symantec) blocks a file upload at the browser level — even in inline/proxy mode. When an endpoint agent intercepts the upload, ITSecTools displays: "BLOCKED: Upload intercepted by Endpoint DLP agent before data reached the browser." This clearly distinguishes endpoint-level blocks from network/proxy DLP blocks, helping security teams validate both layers independently.' }
+        },
+        {
+            '@type': 'Question',
+            name: 'Why does my DLP block CSV/XLSX downloads but not DOCX/PDF?',
+            acceptedAnswer: { '@type': 'Answer', text: 'CSV files are plain text and XLSX files have XML-based content — both are easily parseable by DLP engines. DOCX files are OOXML ZIP archives requiring decompression and XML parsing, while PDF files store text inside compressed content stream objects. Many network-based proxy DLP solutions lack deep file parsing for these complex formats. If your DLP misses DOCX/PDF, check your DLP policy for file type inspection depth settings or consider using Endpoint DLP agents which typically handle these formats better.' }
         },
         {
             '@type': 'Question',
