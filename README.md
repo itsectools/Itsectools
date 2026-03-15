@@ -46,6 +46,17 @@ The most comprehensive free DLP testing tool available. Test your data loss prev
 - Every file is unique — prevents static hash fingerprinting
 - **HTTP and HTTPS POST Simulation** for testing inline text inspection and data-in-motion exfiltration
 
+### Endpoint DLP Agent Detection *(Unique)*
+- The **only free DLP testing tool** that detects and reports when an Endpoint DLP agent blocks file uploads at the browser level — even in inline/proxy mode
+- Clearly distinguishes **endpoint-level blocks** from **network/proxy DLP blocks** with actionable output messages
+- Compatible with **Forcepoint DLP**, **Symantec Endpoint DLP**, and other endpoint agents
+- No other free tool (including dlptest.com) offers this visibility
+
+### Proxy Mode DLP Validation
+- Downloads dynamically generated documents over HTTPS to test DLP configured in proxy/inline mode
+- Validates whether the proxy DLP engine can parse **DOCX**, **PDF**, **XLSX**, and **CSV** to detect embedded sensitive data
+- Each download is dynamically generated with fresh data to prevent static hash fingerprinting
+
 ### File Label Identifier & Classification Checker
 - **DOCX/XLSX** — Parses ZIP archive structure to extract MIP classification labels from `docProps/custom.xml`
 - **PDF** — Reads classification properties from PDF metadata dictionaries

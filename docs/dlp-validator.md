@@ -66,7 +66,31 @@ Upload any document to deep-scan for sensitivity labels, classification markings
 
 ---
 
-## 5. DLP Test Data Generator
+## 5. Endpoint DLP Agent Detection *(Unique)*
+
+ITSecTools is the **only free DLP testing tool** that detects and reports when an Endpoint DLP agent blocks file uploads at the browser level — even when DLP is configured in inline/proxy mode. When an endpoint agent intercepts the upload, ITSecTools displays a clear message identifying it as an endpoint-level block rather than a network/proxy block.
+
+**Why this matters:**
+- Most DLP testing tools silently fail or show generic "upload failed" errors — they cannot tell you **why** or **where** the block occurred
+- ITSecTools clearly differentiates between **endpoint DLP blocks** and **network/proxy DLP blocks**
+- Helps security teams confirm their endpoint agent is actively enforcing policies, even alongside network-based DLP
+- Compatible with **Forcepoint DLP**, **Symantec Endpoint DLP**, and other endpoint agents
+
+> 💡 No other free DLP testing tool (including DLPTest.com) offers this visibility.
+
+---
+
+## 6. Proxy Mode DLP Validation
+
+ITSecTools validates DLP configured in proxy/inline mode by generating documents with embedded PII, PCI, and PHI data and downloading them over HTTPS. This tests whether your DLP engine can intercept and inspect file content during transit.
+
+**Supported formats:** `CSV` · `XLSX` · `DOCX` · `PDF`
+
+Each download is dynamically generated with fresh data to prevent static hash fingerprinting. If your proxy DLP blocks the download, it confirms the engine is performing real-time content inspection on that file format.
+
+---
+
+## 7. DLP Test Data Generator
 
 Generate real test files that challenge your DLP engine's inspection depth.
 

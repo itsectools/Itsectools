@@ -61,6 +61,16 @@ ITSecTools takes a fundamentally different approach. Instead of being just a DLP
 - File Label Identifier — deep-scans DOCX/XLSX files for Microsoft Information Protection (MIP) classification labels, PDF metadata for sensitivity properties, and performs content-level PII/PCI detection with MD5 and SHA-256 hashing
 - Data download with multiple file formats
 
+**Endpoint DLP Agent Detection *(Unique)*:**
+- The only free DLP testing tool that detects and reports when an Endpoint DLP agent blocks file uploads at the browser level — even in inline/proxy mode
+- Clearly distinguishes endpoint-level blocks from network/proxy DLP blocks with actionable output messages
+- Compatible with Forcepoint DLP, Symantec Endpoint DLP, and other endpoint agents
+- No other free tool (including DLPTest.com) offers this visibility
+
+**Proxy Mode DLP Validation:**
+- Downloads dynamically generated documents over HTTPS to validate DLP configured in proxy/inline mode
+- Tests whether the DLP engine can parse DOCX, PDF, XLSX, and CSV to detect embedded sensitive data in transit
+
 **Advanced Payload Generator (Evasion Testing):**
 - Renamed file extensions — generates valid DOCX documents saved as .jpg, .png, .pdf, or .txt to test true file typing (magic number detection)
 - Base64 encoder/decoder — tests whether inline DLP can decode obfuscated payloads
@@ -141,6 +151,8 @@ Proofpoint includes DLP testing capabilities within their enterprise platform.
 | **HTTP/HTTPS POST testing** | ✅ | ✅ | ✅ | ❌ | ✅ |
 | **FTP upload testing** | ✅ (FileZilla) | ✅ (browser) | ❌ | ❌ | ❌ |
 | **Dynamic file generation** | ❌ | ✅ (PDF, DOCX, XLSX, CSV) | ❌ | ❌ | ❌ |
+| **Endpoint DLP detection** | ❌ | ✅ (unique — detects endpoint agent blocks) | ❌ | ❌ | ❌ |
+| **Proxy mode DLP validation** | ❌ | ✅ (dynamic doc downloads over HTTPS) | ❌ | ❌ | ❌ |
 | **Evasion payloads** | ❌ | ✅ (Base64, nested ZIP, renamed ext, encrypted ZIP) | ❌ | ❌ | ❌ |
 | **File classification scanning** | ❌ | ✅ (MIP labels, metadata, PII/PCI) | ❌ | ✅ (API) | ✅ |
 | **DLP regex builder** | ❌ | ✅ (10 vendors) | ❌ | ❌ | ❌ |
