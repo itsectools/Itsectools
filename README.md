@@ -1,82 +1,98 @@
-# ITSecTools - Security Validation Suite
+# ITSecTools — Free Security Validation Suite
 
-A free, browser-based security testing platform for validating NGFW, DLP, IPS, and Threat Protection capabilities. No agents, no sign-ups, no data collection.
+A free, browser-based security testing platform for validating DLP, NGFW, IPS, and Threat Protection capabilities. No agents, no sign-ups, no data collection.
 
-**Live:** [https://itsectools.com](https://itsectools.com)
+**🔗 Live Tool:** [https://itsectools.com](https://itsectools.com)
+
+---
+
+## What Is ITSecTools?
+
+ITSecTools helps security engineers, SOC analysts, and compliance auditors validate their security controls directly from the browser. Upload sensitive files, run attack simulations, test DLP policies, and generate professional PDF reports — all free, with zero data stored.
+
+---
 
 ## Features
 
-### 1. NGFW Validation
-- **IPS Signature Testing** — SQL Injection (UNION SELECT), Cross-Site Scripting (XSS cookie theft), and Directory Traversal attacks via HTTP query strings.
-- **Advanced Evasion Techniques (AET)** — Log4j JNDI header injection, Hex/URL-encoded SQL injection, and Shellshock RCE in custom HTTP headers.
-- **Command & Control (C2C) Beacon** — Encoded path traversal exfiltration, web shell beacons, and ActiveX dropper delivery via response-body inspection.
-- **Run All Tests** — Execute IPS, AET, and C2C suites sequentially (9 total attacks) with configurable IP shun cooldown delay.
-- **Network IP Flooder** — Fire 30 continuous IPS attack patterns (SQL injection, path traversal, encoded traversal, system file disclosure) in rapid succession with no delay. Each request uses a unique URL path and patterns are randomized (Fisher-Yates shuffle) each run. Includes mid-stream body termination detection — catches NGFW blocks that arrive after HTTP 200 headers.
-- **IP Shun Cooldown Delay** — Configurable pause (1s / 6s / 15s / 30s) between IPS/AET/C2C suite attacks to avoid NGFW IP shunning. The Network IP Flooder runs without delay by design.
-- **PDF Assessment Report** — Auto-generated scorecard with score gauge, per-category breakdown (IPS, Evasion, C2, Flood), gap analysis, and remediation recommendations.
+### 🛡 DLP Validator
+Test your Data Loss Prevention solution across multiple protocols and attack vectors.
 
-### 2. MITRE ATT&CK Kill Chain Simulator
-- **T1190 — Initial Access:** Apache Struts RCE (CVE-2017-5638) OGNL injection in Content-Type header.
-- **T1059.004 — Execution:** ThinkPHP RCE (CVE-2018-20062) reverse shell download via URL path.
-- **T1003.001 — Credential Access:** Pulse Secure VPN (CVE-2019-11510) arbitrary file reading for cached credentials.
-- **T1048.003 — Exfiltration:** Shellshock (CVE-2014-6271) system file exfiltration via header injection.
-- Sequential execution with 6s inter-stage delay to avoid IP shunning.
-- **PDF Kill Chain Report** — Stage-by-stage visualization, risk assessment, and recommendations showing where the attack was stopped.
+- **Multi-Protocol Testing** — Upload files over HTTP, HTTPS, and FTP to verify DLP inspection across all egress channels.
+- **Advanced DLP Tests — MCP Protocol Testing** *(Unique — no competitor offers this)* — Test whether your DLP can detect sensitive data (PII, PCI, PHI) buried inside nested JSON-RPC payloads at configurable depths (2, 4, or 6 levels). This is the same structure used by MCP (Model Context Protocol) — the protocol AI agents use to communicate with external tools. Most DLP engines only scan flat text — this test reveals the gap.
+- **Endpoint DLP Agent Detection** *(Unique)* — The only free tool that detects and reports when an Endpoint DLP agent (Forcepoint, Symantec) blocks uploads at the browser level — distinguishing endpoint vs. network/proxy blocks.
+- **Dynamic Document Generation** — Fresh PII/PCI/PHI data in PDF, DOCX, XLSX, CSV formats. Each download is unique to prevent static hash fingerprinting.
+- **DLP Regex Builder & Translator** — Build and translate regex patterns across 10 vendor engines: Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint.
+- **Evasion Payloads** — Base64 encoding, renamed extensions, AES-256 encrypted archives, nested ZIPs.
+- **File Label Identifier** — Deep-scan DOCX/XLSX/PDF for Microsoft Information Protection (MIP) classification labels with content-level pattern matching fallback.
+- **PDF Validation Report** — Auto-generated scorecard with score gauge, protocol coverage, gap analysis, and recommendations.
 
-### 3. DLP (Data Loss Prevention) Tools
-- **File Upload Testing** — Upload sensitive test files over HTTP/HTTPS/FTP to verify DLP blocking.
-- **Endpoint DLP Agent Detection** *(Unique)* — The only free DLP testing tool that detects and reports when an Endpoint DLP agent (Forcepoint, Symantec) blocks file uploads at the browser level — even in inline/proxy mode. Clearly distinguishes endpoint-level blocks from network/proxy DLP blocks with actionable output messages.
-- **Document Generation** — Generate DOCX/PDF/XLSX/CSV with 100 rows of realistic PII (SSN, Driver License, Passport), PCI (Luhn-valid Visa/MC/Amex), or PHI (ICD-10 codes, prescriptions) data. Each download is dynamically generated to prevent static hash fingerprinting.
-- **Proxy Mode DLP Validation** — Downloads dynamically generated documents over HTTPS. Tests whether proxy/inline DLP can parse DOCX (OOXML ZIP), PDF (content streams), XLSX, and CSV to detect embedded sensitive data. CSV/XLSX are detected by most DLP engines; DOCX/PDF require deeper file parsing that not all proxy DLP solutions support.
-- **Metadata & Label Checker** — Inspect Microsoft Information Protection (MIP) labels from DOCX/XLSX ZIP archives and PDF metadata dictionaries. Content-level DLP pattern matching with MD5/SHA-256 hashing.
-- **Regex Builder & Translator** — Build and translate DLP regex patterns across 10 vendor formats (Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint).
-- **Evasion Payloads** — Base64 encoding, renamed extensions (.docx→.jpg), AES-256 encrypted archives, nested ZIPs (depth testing).
-- **MCP Protocol Testing (JSON Exfiltration)** — Tests DLP detection of sensitive data inside nested JSON-RPC payloads (MCP format). Server generates fresh PII/PCI/PHI data and wraps it at configurable nesting depth (2/4/6 levels). Tests whether network DLP can parse deeply nested JSON structures used by AI agents and modern APIs.
-- **PDF Validation Report** — Auto-generated scorecard with score gauge, protocol coverage matrix, data category breakdown, gap analysis, and actionable recommendations. Client-side generation — no data leaves the browser.
+### 🔥 NGFW & IPS Validation
+Run real attack payloads against your firewall and see what gets through.
 
-### 4. Threat Protection Lab
-- **EICAR Test Files** — Standard EICAR antivirus test file in multiple formats (.txt, .zip, .ps1).
-- **Heuristic Malware Samples** — Files with malware-like signatures (Mimikatz strings, PowerShell cradles).
-- **Ransomware Simulator** — Harmless scripts mimicking ransomware behavior (VBS, BAT, PS1).
-- **OLE ActiveX Exploit** — CVE-2012-0158 MSCOMCTL.ListView buffer overflow in OLE compound file.
-- **ANI Cursor Exploit** — CVE-2007-0038 RIFF/ACON animation header buffer overflow.
+- **IPS Signature Testing** — SQL Injection, Cross-Site Scripting (XSS), and Path Traversal attacks.
+- **Advanced Evasion Techniques** — Log4j JNDI injection, Hex-encoded SQLi, Shellshock probes.
+- **C2 Beacon Simulation** — Encoded exfiltration, web shell beacons, ActiveX dropper delivery.
+- **Network IP Flooder** — 30 randomized attack patterns fired continuously to stress-test sustained blocking.
+- **PDF Security Assessment Report** — Scored report with per-category breakdown and remediation recommendations.
 
-### 5. Network Pulse
-- **Public IP Detection** — Identify your external IP address visible to servers.
-- **Edge Server Identification** — Detect which CDN/cloud data center serves your requests.
-- **Latency & Jitter** — Application-layer HTTP RTT measurement with variance tracking.
-- **Packet Loss** — HTTP request failure rate monitoring.
-- **Path MTU Discovery** — Binary search (576-1500 bytes) for maximum transmission unit.
-- **AI Security Insights** — AI-generated posture assessment and recommendations.
+### ⊕ MITRE ATT&CK Kill Chain Simulator
+Simulate a 4-stage attack chain and see which stage your defenses break.
+
+- **T1190** — Initial Access (Apache Struts / Log4j exploitation)
+- **T1059.001** — Execution (PowerShell download cradle)
+- **T1003.001** — Credential Access (Mimikatz-pattern credential dump)
+- **T1048.003** — Exfiltration (Shellshock data extraction)
+- **PDF Kill Chain Report** — Stage-by-stage visualization with risk assessment.
+
+### 🔒 Threat Protection Lab
+Download safe test files to validate your antivirus and endpoint protection.
+
+- EICAR standard test files (.txt, .zip, .ps1)
+- Heuristic malware samples (.exe, .pdf, .doc)
+- Ransomware behavior simulators
+- OLE ActiveX exploit documents
+
+### 📡 Network Pulse
+Real-time network diagnostics and telemetry.
+
+- Public IP detection with geolocation
+- Latency, jitter, and packet loss measurement
+- Path MTU discovery
+- AI-powered security insights
+
+---
 
 ## Prerequisites
 
-- **SSL Decryption (DPI-SSL)** must be enabled on your firewall for the `itsectools.com` domain. Without decryption, the firewall cannot inspect HTTPS payloads.
+- **SSL Decryption (DPI-SSL)** must be enabled on your firewall for the `itsectools.com` domain. Without decryption, the firewall cannot inspect HTTPS payloads inside the encrypted tunnel.
 
-## How to Run
+---
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
+## Resources
 
-2. Run the development server:
-   ```bash
-   npm run dev
-   ```
+| Resource | Link |
+|----------|------|
+| **Live Tool** | [itsectools.com](https://itsectools.com) |
+| **DLP Validator** | [itsectools.com/dlp](https://itsectools.com/dlp) |
+| **NGFW Testing** | [itsectools.com/ngfw](https://itsectools.com/ngfw) |
+| **MITRE ATT&CK** | [itsectools.com/mitre](https://itsectools.com/mitre) |
+| **Threat Lab** | [itsectools.com/threat-protection](https://itsectools.com/threat-protection) |
+| **Network Pulse** | [itsectools.com/network-pulse](https://itsectools.com/network-pulse) |
+| **Help & Guides** | [itsectools.com/help](https://itsectools.com/help) |
+| **Blog** | [itsectools.com/blog](https://itsectools.com/blog) |
+| **Contact** | [itsectools.com/contact](https://itsectools.com/contact) |
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+---
 
-4. Deploy to Firebase:
-   ```bash
-   firebase deploy
-   ```
+## Privacy & Safety
 
-## Tech Stack
-- **Framework**: Next.js 16 (App Router)
-- **Hosting**: Firebase Hosting with Cloud Functions
-- **Styling**: Vanilla CSS with dark-themed console output
-- **Language**: TypeScript
+- **Free to use** — no subscriptions, no accounts, no paywalls.
+- **Safe simulation** — all test payloads are benign and designed exclusively for detection testing.
+- **Privacy first** — all analysis occurs in the browser or via ephemeral stateless functions. No data is stored, logged, or transmitted.
+- **No tracking** — no user data is collected beyond anonymous analytics.
+
+---
 
 ## Disclaimer
+
 This tool is for **educational and authorized security testing purposes only**. All attack simulations use industry-standard test patterns. No actual malware is distributed.
