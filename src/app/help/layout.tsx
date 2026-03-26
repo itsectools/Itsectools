@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Help & User Guides — How to Use ITSecTools | ITSecTools',
-    description: 'Step-by-step guides for every ITSecTools feature. Learn how to test DLP policies, validate NGFW rules, simulate MITRE ATT&CK kill chains, generate test payloads, and measure network telemetry.',
+    title: 'Help & Documentation | ITSecTools',
+    description: 'Step-by-step guides for DLP testing, firewall validation, MITRE ATT&CK simulation, threat generation, network diagnostics, and PDF report generation.',
     alternates: {
         canonical: 'https://itsectools.com/help',
     },
     openGraph: {
-        title: 'Help & User Guides | ITSecTools',
-        description: 'Detailed feature-by-feature documentation for ITSecTools security validation suite.',
+        title: 'Help & Documentation | ITSecTools',
+        description: 'Guides for every ITSecTools feature — DLP, NGFW, MITRE, threat gen, and network tools.',
+        url: 'https://itsectools.com/help',
+        siteName: 'ITSecTools',
     }
 };
 

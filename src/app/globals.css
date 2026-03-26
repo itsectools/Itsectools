@@ -55,13 +55,42 @@ body {
   position: fixed;
   height: 100vh;
   z-index: 50;
+  transition: width 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar-collapsed {
+  width: 72px;
+}
+
+.sidebar-expanded {
+  width: 260px;
+}
+
+.sidebar-collapsed .nav-label {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.15s ease, width 0.2s ease;
+}
+
+.sidebar-expanded .nav-label {
+  opacity: 1;
+  width: auto;
+  transition: opacity 0.15s ease 0.05s;
 }
 
 .main-content {
   flex: 1;
-  margin-left: var(--sidebar-width);
+  margin-left: 260px;
   padding: 2.5rem;
   max-width: 1600px;
+  transition: margin-left 0.2s ease;
+}
+
+.sidebar-collapsed ~ .main-content {
+  margin-left: 72px;
 }
 
 /* Typography */
@@ -178,13 +207,37 @@ p {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.8rem 1.5rem;
+  padding: 0.8rem 1rem;
   color: var(--text-muted);
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
   border-left: 3px solid transparent;
   transition: all 0.2s;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 20px;
+}
+
+.sidebar-collapsed .nav-item {
+  justify-content: center;
+  padding: 0.8rem;
+  border-left: none;
+  border-radius: 8px;
+}
+
+.sidebar-collapsed .nav-item.active {
+  border-left: none;
+  background: #EFF6FF;
 }
 
 .nav-item:hover {
@@ -194,19 +247,72 @@ p {
 
 .nav-item.active {
   background: #EFF6FF;
-  /* Light Blue bg */
   color: var(--primary);
   border-left-color: var(--primary);
 }
 
+.sidebar-collapsed .nav-item.active {
+  border-left-color: transparent;
+}
+
 /* Logo Area */
 .logo-area {
-  padding: 1.5rem;
+  padding: 1rem 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   border-bottom: 1px solid var(--border);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  min-height: 72px;
+  position: relative;
+}
+
+.sidebar-collapsed .logo-area {
+  justify-content: center;
+  padding: 1rem 0.5rem;
+}
+
+/* Pin Button */
+.pin-button {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.pin-button:hover {
+  color: var(--primary);
+  background: #EFF6FF;
+  border-color: var(--border);
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sidebar-collapsed .sidebar-footer {
+  justify-content: center;
+  padding: 1rem 0.5rem;
 }
 
 .logo-icon {
@@ -224,30 +330,36 @@ p {
 /* Tabs */
 .tabs {
   display: flex;
-  gap: 1rem;
-  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-bottom: 2rem;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  white-space: nowrap;
+  padding-bottom: 0.5rem;
 }
 
 .tab {
-  padding: 0.75rem 0;
-  margin-bottom: -1px;
+  padding: 0.6rem 1.25rem;
   cursor: pointer;
   color: var(--text-muted);
   font-weight: 500;
-  border-bottom: 2px solid transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--bg-card);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .tab.active {
   color: var(--primary);
-  border-bottom-color: var(--primary);
+  border-color: var(--primary);
+  background-color: #EFF6FF;
 }
 
 .tab:hover:not(.active) {
   color: var(--text-main);
+  border-color: #94A3B8;
+  background-color: #F8FAFC;
 }
 
 /* Animation Utils */
@@ -291,6 +403,12 @@ p {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 2rem;
+  align-items: start;
+}
+
+.console-sticky {
+  position: sticky;
+  top: 2rem;
 }
 
 .mobile-scroll {
@@ -311,40 +429,52 @@ p {
 }
 
 @media (max-width: 1024px) {
-  :root {
-    --sidebar-width: 80px;
+  /* Force collapsed on tablet — no hover expand (touch devices) */
+  .sidebar {
+    width: 72px !important;
   }
 
-  .nav-item span {
-    display: none;
-  }
-
-  .logo-area span {
-    display: none;
+  .nav-label {
+    opacity: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
   }
 
   .logo-area {
     justify-content: center;
-    padding: 1.5rem 0;
+    padding: 1rem 0.5rem;
   }
 
   .nav-item {
     justify-content: center;
-    padding: 1rem;
+    padding: 0.8rem;
+    border-left: none;
+  }
+
+  .nav-item.active {
+    border-left-color: transparent;
+  }
+
+  .pin-button {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 72px !important;
+  }
+
+  .sidebar-footer {
+    justify-content: center;
   }
 }
 
 @media (max-width: 768px) {
-  :root {
-    --sidebar-width: 0px;
-  }
-
   .app-layout {
     flex-direction: column;
   }
 
   .sidebar {
-    width: 100%;
+    width: 100% !important;
     height: auto;
     position: sticky;
     top: 0;
@@ -354,16 +484,14 @@ p {
     align-items: center;
     padding: 0.5rem 1rem;
     overflow-x: auto;
-    /* Allow scrolling for nav items */
     white-space: nowrap;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
   }
 
   .main-content {
-    margin-left: 0;
+    margin-left: 0 !important;
     padding: 1rem;
-    /* Reduce padding on mobile */
     overflow-x: hidden;
   }
 
@@ -372,12 +500,11 @@ p {
     margin: 0;
     padding: 0;
     margin-right: 0.5rem;
+    min-height: auto;
   }
 
-  .logo-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 0.9rem;
+  .pin-button {
+    display: none !important;
   }
 
   .sidebar nav {
@@ -386,62 +513,35 @@ p {
     align-items: center;
     gap: 0.25rem;
     padding: 0 !important;
-    /* Override inline style if possible, or just work with it */
     flex: 1;
-    /* Allow nav to take available space */
     justify-content: center;
   }
 
-  .sidebar>div:last-child {
-    /* Footer area */
-    border-top: none !important;
-    padding: 0 !important;
-    margin-top: 0 !important;
-    margin-left: 0.5rem;
-  }
-
-  /* Make nav items inline-flex and adjust active state */
-  /* Make nav items inline-flex and adjust active state */
   .nav-item {
     padding: 0.6rem 0.8rem;
     border-left: none;
     border-radius: 6px;
     justify-content: center;
     border-bottom: 2px solid transparent;
-    display: flex;
-    align-items: center;
+    margin-bottom: 0;
   }
 
   .nav-item.active {
-    background: transparent;
-    color: var(--primary);
+    background: #EFF6FF;
     border-left-color: transparent;
     border-bottom-color: var(--primary);
-    background: #EFF6FF;
-    /* Optional: keep subtle bg */
   }
 
-  /* Hide sidebar footer text on mobile to save space */
-  .sidebar>div:last-child span {
+  .nav-label {
+    display: none !important;
+  }
+
+  .sidebar-footer {
     display: none;
   }
 
-  /* Show only the icon or a dot for footer if really needed, but let's hide it for cleaner bar */
-  .sidebar>div:last-child {
-    display: none;
-  }
-
-  /* Show logo icon but maybe smaller or just the icon */
   .logo-area span {
     display: none;
-  }
-
-  /* Make nav items visible but compact */
-  .nav-item span {
-    display: block;
-    /* Show text again if needed, or keep hidden? styling choice. Let's keep icons + text if it fits, or just icons. */
-    display: none;
-    /* Keep simple for now */
   }
 
   /* Grid adjustments for mobile */
@@ -455,7 +555,6 @@ p {
     padding: 1rem;
   }
 
-  /* Adjust typography */
   h1 {
     font-size: 1.5rem;
   }
@@ -914,4 +1013,75 @@ div[class*="build-activity"] {
 
 .seo-details .seo-content {
   padding: 0 2rem 2rem 2rem;
+}
+
+/* --- Blog Enhancements --- */
+.blog-image-wrapper {
+  margin: 2.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: white;
+}
+.blog-image-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0,0,0,0.1);
+}
+.blog-image-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.blog-callout {
+  background: #F8FAFC;
+  border-left: 4px solid var(--primary);
+  padding: 1.5rem 2rem;
+  border-radius: 0 8px 8px 0;
+  margin: 2rem 0;
+  font-size: 1.05rem;
+  color: #334155;
+  font-style: italic;
+  line-height: 1.7;
+}
+.blog-cta {
+  display: inline-flex;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  color: white !important;
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+  text-align: center;
+}
+.blog-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px -5px rgba(37, 99, 235, 0.4);
+}
+/* Blog Theme Classes */
+.blog-intro-callout {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #334155;
+  margin-bottom: 2rem;
+  border-left: 4px solid #10B981;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+.blog-vs-heading-bad {
+  font-size: 1.1rem;
+  color: #64748B;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.blog-vs-heading-good {
+  font-size: 1.1rem;
+  color: #10B981;
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
 }

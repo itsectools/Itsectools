@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Free NGFW & IPS Testing Tool | ITSecTools',
-    description: 'Stress-test your Next-Generation Firewall (NGFW) and Intrusion Prevention System (IPS). Simulate threats, SQLi, XSS, Path Traversal, and C2 beacons.',
+    title: 'Test Your Firewall — SQLi, XSS & IPS Attacks | ITSecTools',
+    description: 'Run real attack payloads against your NGFW and see what gets through. SQLi, XSS, Log4j, C2 beacons, and 30-attack flood tests. Download a scored PDF assessment report. Requires SSL decryption. Free.',
     alternates: {
         canonical: 'https://itsectools.com/ngfw',
     },
     openGraph: {
-        title: 'Free NGFW & IPS Testing Tool | ITSecTools',
-        description: 'Validate NGFW and Intrusion Prevention System (IPS) policies with real-time threat simulations.',
+        title: 'Test Your Firewall — SQLi, XSS & IPS Attacks | ITSecTools',
+        description: 'Run real attack payloads against your NGFW. SQLi, XSS, Log4j, C2 beacons, and flood tests. Free.',
+        url: 'https://itsectools.com/ngfw',
+        siteName: 'ITSecTools',
     }
 };
 
@@ -22,9 +24,10 @@ const jsonLd = {
     featureList: [
         'IPS Signature Testing: Run real-time intrusion prevention tests including SQL Injection (SQLi), Cross-Site Scripting (XSS), and Path Traversal attack simulations.',
         'Advanced Evasion Techniques (AET): Validate firewall inspection capabilities against Log4j header injections, Hex-encoded SQLi, and Shellshock probes.',
-        'Command & Control (C2) Simulations: Test outbound traffic policies using Python Stagers and Web Shell simulators to verify beacon detection.',
-        'Out-of-Band (OOB) Exfiltration: Check for unauthorized data extraction channels by simulating OOB DNS and HTTP data exfiltration.',
-        'Protocol Evasion Validation: Test firewall adherence to RFC standards using Jumbo HTTP Headers and HTTP Method Spoofing techniques.'
+        'Command & Control (C2) Simulations: Test outbound traffic policies using encoded path traversal exfiltration, web shell beacons, and ActiveX dropper delivery.',
+        'Run All Tests: Execute IPS, AET, and C2C suites sequentially with configurable IP shun cooldown delay. Combined summary of all 9 attacks.',
+        'Network IP Flooder: Fire 30 continuous URL-based IPS attacks (SQL injection, path traversal, system file disclosure) to stress-test firewall throughput and signature matching under load.',
+        'PDF Assessment Report: Auto-generated scorecard with IPS and evasion category breakdown, gap analysis, and remediation recommendations.'
     ]
 };
 
@@ -51,6 +54,16 @@ const faqJsonLd = {
             '@type': 'Question',
             name: 'Do I need SSL decryption enabled for NGFW testing?',
             acceptedAnswer: { '@type': 'Answer', text: 'Yes. Since tests run over HTTPS (port 443), your firewall must have SSL/TLS decryption (DPI-SSL) enabled for the domain to inspect the encrypted payloads. Without decryption, the firewall cannot see the attack signatures.' }
+        },
+        {
+            '@type': 'Question',
+            name: 'Can I generate a firewall security assessment report?',
+            acceptedAnswer: { '@type': 'Answer', text: 'Yes. After running IPS, evasion, and C2 tests, click "Generate Report" to download a branded PDF with a score gauge, per-category breakdown bars, detailed test results, identified gaps, and actionable recommendations. Everything is generated client-side.' }
+        },
+        {
+            '@type': 'Question',
+            name: 'What is the Network IP Flooder and how does it work?',
+            acceptedAnswer: { '@type': 'Answer', text: 'The Network IP Flooder fires 30 continuous IPS attack patterns (SQL injection, path traversal, encoded traversal, system file disclosure) in rapid succession. Each request hits a unique URL path to avoid browser connection reuse. It tests your firewall throughput and signature detection under sustained attack load.' }
         }
     ]
 };

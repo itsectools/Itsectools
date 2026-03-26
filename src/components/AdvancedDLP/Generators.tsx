@@ -3,19 +3,18 @@
 import React, { useState } from 'react';
 import { DownloadIcon, KeyIcon, FileTextIcon, LayersIcon, ShieldIcon } from '@/components/Icons';
 import * as zip from '@zip.js/zip.js';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
 
 const DEFAULT_PCI_PAYLOAD = `Cardholder Name, Credit Card Number, Expiration Date, CVV, Billing Zip Code
-James Smith, 4241-6716-4447-1640, 12/27, 489, 45442
-Mary Johnson, 4457-3121-8910-9456, 09/29, 245, 14933
-Robert Williams, 4273-3978-1663-4119, 04/27, 925, 27155
-Patricia Brown, 3722-277376-89819, 09/29, 8399, 46238
-John Jones, 3791-601289-03528, 11/27, 8442, 76604
-Jennifer Garcia, 4841-5291-0561-8642, 07/29, 832, 81736
-Michael Miller, 3793-498376-16774, 03/26, 8171, 79496
-Linda Davis, 4191-0368-3622-4399, 12/28, 132, 70165
-William Rodriguez, 4991-9294-8606-6296, 12/29, 255, 32418
-Elizabeth Martinez, 3791-328635-36219, 12/27, 3738, 29119`;
+James Smith, 4147-2055-4916-0415, 12/27, 489, 45442
+Mary Johnson, 5466-1601-0761-0238, 09/29, 245, 14933
+Robert Williams, 4000-2298-7077-1372, 04/27, 925, 27155
+Patricia Brown, 3782-088507-55870, 09/29, 8399, 46238
+John Jones, 5178-0599-7187-8161, 11/27, 8442, 76604
+Jennifer Garcia, 4266-8453-7151-4299, 07/29, 832, 81736
+Michael Miller, 3499-625546-35194, 03/26, 8171, 79496
+Linda Davis, 5424-1812-9225-7578, 12/28, 132, 70165
+William Rodriguez, 4737-0245-0108-1725, 12/29, 255, 32418
+Elizabeth Martinez, 4147-2047-2773-7631, 12/27, 3738, 29119`;
 
 export default function AdvancedPayloadGenerator() {
     // 1. Renamed File Extensions
@@ -24,20 +23,8 @@ export default function AdvancedPayloadGenerator() {
 
     const handleGenerateRenamed = async () => {
         try {
-            const doc = new Document({
-                sections: [{
-                    properties: {},
-                    children: [
-                        new Paragraph({
-                            children: [
-                                new TextRun({ text: renameText, bold: true, size: 28 }),
-                            ],
-                        }),
-                    ],
-                }],
-            });
-
-            const blob = await Packer.toBlob(doc);
+            // Create a plain text blob (CSV format)
+            const blob = new Blob([renameText], { type: 'text/csv' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `payload${fakeExt}`;
@@ -92,7 +79,7 @@ export default function AdvancedPayloadGenerator() {
                 a.click();
                 URL.revokeObjectURL(a.href);
             } else if (b64Format === 'docx') {
-                // Create a docx and put the base64 as text (some parsers extract text)
+                const { Document, Packer, Paragraph, TextRun } = await import('docx');
                 const doc = new Document({
                     sections: [{
                         properties: {},
@@ -126,24 +113,46 @@ export default function AdvancedPayloadGenerator() {
     // 3. Password-Protected Archive
     const [pwText, setPwText] = useState(DEFAULT_PCI_PAYLOAD);
     const [pwPassword, setPwPassword] = useState('testing123');
+    const [pwStatus, setPwStatus] = useState<string | null>(null);
 
     const handleGeneratePasswordZip = async () => {
+        setPwStatus('Generating encrypted archive...');
         try {
-            const blobWriter = new zip.BlobWriter('application/zip');
-            const zipWriter = new zip.ZipWriter(blobWriter, { password: pwPassword });
+            // Wait to allow React a moment to render the status
+            await new Promise(r => setTimeout(r, 150));
 
-            await zipWriter.add('payload.txt', new zip.TextReader(pwText));
-            await zipWriter.close();
+            // XOR Obfuscation (Evades Inline DLP Base64 Decoders during POST)
+            // We use URI encoding to handle special characters before XORing
+            const uriEncoded = encodeURIComponent(pwText);
+            const xorString = uriEncoded.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ 0x55)).join('');
+            const b64Mask = btoa(xorString);
 
-            const blob = await blobWriter.getData();
+            const res = await fetch('/api/dlp/generator', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    text: b64Mask, 
+                    password: pwPassword
+                })
+            });
+
+            if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
+            const blob = await res.blob();
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = `protected_payload.zip`;
             a.click();
             URL.revokeObjectURL(a.href);
-        } catch (error) {
+            setPwStatus('Success: Archive generated and downloaded.');
+        } catch (error: any) {
             console.error('Password zip generation failed', error);
-            alert('Failed to generate password-protected zip');
+            const msg = error.message || String(error);
+            if (error.name === 'TypeError' || msg.includes('fetch') || msg.includes('NetworkError')) {
+                setPwStatus('BLOCKED: Connection Reset. The Endpoint DLP actively intercepted the generation upload or the file download.');
+            } else {
+                setPwStatus(`BLOCKED: File generation failed (${msg}).`);
+            }
         }
     };
 
@@ -257,7 +266,7 @@ export default function AdvancedPayloadGenerator() {
                                 <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Renamed File Extensions</h3>
                             </div>
                             <p style={{ fontSize: '0.95rem', color: '#64748B', marginBottom: '2rem', lineHeight: '1.5' }}>
-                                Generates a valid DOCX document containing your text, but saved with a misleading extension. This helps test if the DLP engine relies on True File Typing (Magic Number checks) rather than just reading the file extension.
+                                Generates a plain CSV text file containing your text, but saved with a misleading extension. This helps test if the DLP engine relies on True File Typing (Magic Number checks) rather than just reading the file extension.
                             </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 <div>
@@ -370,10 +379,26 @@ export default function AdvancedPayloadGenerator() {
                                 </div>
                                 <h3 style={{ margin: 0, fontSize: '1.4rem' }}>Password-Protected Archive</h3>
                             </div>
-                            <p style={{ fontSize: '0.95rem', color: '#64748B', marginBottom: '2rem', lineHeight: '1.5' }}>
-                                Generates an AES-encrypted ZIP file. This is crucial for testing whether the DLP engine handles unreadable encrypted archives by blocking them (fail-close) or allowing them (fail-open).
+                            <p style={{ fontSize: '0.95rem', color: '#64748B', marginBottom: '1rem', lineHeight: '1.5' }}>
+                                Generates an AES-256 encrypted ZIP file. This is crucial for testing whether the DLP engine handles unreadable encrypted archives by blocking them (fail-close) or allowing them (fail-open).
                             </p>
+                            <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '6px', padding: '0.75rem', marginBottom: '2rem', fontSize: '0.85rem', color: '#B45309', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <strong>Note:</strong> Native Windows Explorer does not support AES-256 ZIP decryption. You will need 7-Zip or WinRAR to manually extract this file on Windows, but the strong AES encryption is required to properly trigger strict DLP inspection policies.
+                            </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                {pwStatus && (
+                                    <div className="fade-in" style={{
+                                        marginBottom: '0.5rem',
+                                        padding: '1rem',
+                                        background: pwStatus.startsWith('BLOCKED') ? '#FEF2F2' : (pwStatus.startsWith('Success') ? '#F0FDF4' : '#EFF6FF'),
+                                        border: `1px solid ${pwStatus.startsWith('BLOCKED') ? '#F87171' : (pwStatus.startsWith('Success') ? '#4ADE80' : '#BFDBFE')}`,
+                                        borderRadius: '8px',
+                                        color: pwStatus.startsWith('BLOCKED') ? '#B91C1C' : (pwStatus.startsWith('Success') ? '#15803D' : '#1E40AF'),
+                                        fontWeight: 600
+                                    }}>
+                                        {pwStatus}
+                                    </div>
+                                )}
                                 <div>
                                     <label style={{ display: 'block', fontSize: '1rem', color: '#0F172A', fontWeight: 600, marginBottom: '0.25rem' }}>Payload Content to Encrypt</label>
                                     <p style={{ fontSize: '0.95rem', color: '#64748B', margin: '0 0 0.5rem 0' }}>This sensitive text will be saved as "payload.txt" inside the password-protected ZIP archive.</p>

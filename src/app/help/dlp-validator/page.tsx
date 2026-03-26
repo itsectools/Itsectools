@@ -33,6 +33,8 @@ export default function DLPGuide() {
                     <li><a href="#regex-translator" style={{ color: 'inherit', textDecoration: 'none' }}>Regex Translator</a></li>
                     <li><a href="#advanced-payloads" style={{ color: 'inherit', textDecoration: 'none' }}>DLP Test Data Generator</a></li>
                     <li><a href="#endpoint-dlp" style={{ color: 'inherit', textDecoration: 'none' }}>Unique: Endpoint DLP Agent Detection</a></li>
+                    <li><a href="#mcp-testing" style={{ color: 'inherit', textDecoration: 'none' }}>Advanced: MCP Protocol Testing (JSON Exfiltration)</a></li>
+                    <li><a href="#pdf-report" style={{ color: 'inherit', textDecoration: 'none' }}>PDF Validation Report</a></li>
                 </ol>
             </section>
 
@@ -253,6 +255,60 @@ export default function DLPGuide() {
 
                 <div style={{ background: '#F0FDF4', borderRadius: '8px', padding: '1.25rem', border: '1px solid #86EFAC', fontSize: '0.9rem', color: '#166534' }}>
                     <strong>Not Available Elsewhere:</strong> Other free DLP testing websites (e.g., dlptest.com) can only validate network/proxy DLP by checking if file transfers are blocked on the wire. They have no ability to detect or report endpoint-level DLP interception. ITSecTools is uniquely designed for organizations running endpoint and network DLP in parallel — giving visibility into both layers from a single test.
+                </div>
+            </section>
+
+            {/* MCP Protocol Testing */}
+            <section id="mcp-testing" style={{ marginBottom: '3rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#0F172A', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '2px solid #EEF2FF' }}>9. Advanced: MCP Protocol Testing (JSON Exfiltration)</h2>
+                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1rem' }}>
+                    Tests whether your DLP can detect sensitive data buried inside nested JSON-RPC payloads — the same structure used by MCP (Model Context Protocol) and modern API communications. Unlike the raw text POST test, sensitive data is generated <strong>server-side</strong> and wrapped in a deeply nested JSON structure, so the DLP engine must parse the JSON to find it.
+                </p>
+
+                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', marginBottom: '1rem', border: '1px solid #E2E8F0' }}>
+                    <h3 style={{ fontSize: '1rem', color: '#0F172A', marginBottom: '0.75rem' }}>How to Use</h3>
+                    <ol style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+                        <li>Navigate to <strong>DLP Validator</strong> → <strong>Advanced DLP Tests</strong> tab.</li>
+                        <li>Select <strong>Data Type</strong> (PII, PCI, or PHI).</li>
+                        <li>Select <strong>Nesting Depth</strong> (2, 4, or 6 levels deep) — deeper nesting is harder for DLP to parse.</li>
+                        <li>Select <strong>Protocol</strong> (HTTP or HTTPS).</li>
+                        <li>Click <strong>Send MCP Request</strong>.</li>
+                        <li>Review the JSON preview to see the exact payload that was sent.</li>
+                    </ol>
+                </div>
+
+                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', marginBottom: '1rem', border: '1px solid #E2E8F0' }}>
+                    <h3 style={{ fontSize: '1rem', color: '#0F172A', marginBottom: '0.75rem' }}>What It Tests</h3>
+                    <ul style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+                        <li><strong>JSON parsing depth</strong> — Can your DLP find an SSN buried 4-6 levels deep inside a JSON object?</li>
+                        <li><strong>Content-Type awareness</strong> — Does your DLP inspect <code style={{ background: '#F1F5F9', padding: '0.1rem 0.4rem', borderRadius: '3px', fontSize: '0.85rem' }}>application/json</code> payloads or only form data?</li>
+                        <li><strong>API/MCP exfiltration</strong> — Modern AI tools use MCP to communicate. Can your DLP detect data leaking through these channels?</li>
+                    </ul>
+                </div>
+
+                <h3 style={{ fontSize: '1rem', color: '#0F172A', marginBottom: '0.75rem' }}>Interpreting Results</h3>
+                <ul style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0, marginBottom: '1rem' }}>
+                    <li><strong style={{ color: '#DC2626' }}>LEAKED</strong> — DLP failed to detect sensitive data inside the nested JSON. Your DLP may not parse JSON deeply enough.</li>
+                    <li><strong style={{ color: '#16A34A' }}>BLOCKED</strong> — DLP detected and blocked the sensitive data inside the JSON-RPC payload.</li>
+                </ul>
+            </section>
+
+            {/* PDF Report */}
+            <section id="pdf-report" style={{ marginBottom: '3rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#0F172A', marginBottom: '1rem', paddingBottom: '0.5rem', borderBottom: '2px solid #EEF2FF' }}>10. PDF Validation Report</h2>
+                <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '1rem' }}>
+                    After running your tests, click <strong>Generate Report</strong> to download a branded PDF with a score gauge, protocol coverage matrix, detailed test results, gap analysis, and actionable recommendations. The report is generated entirely client-side — no data leaves your browser.
+                </p>
+
+                <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', marginBottom: '1rem', border: '1px solid #E2E8F0' }}>
+                    <h3 style={{ fontSize: '1rem', color: '#0F172A', marginBottom: '0.75rem' }}>What the Report Includes</h3>
+                    <ul style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: 0 }}>
+                        <li><strong>Score gauge</strong> — visual percentage showing how many tests were blocked vs. leaked.</li>
+                        <li><strong>Protocol coverage bars</strong> — per-protocol breakdown (HTTP, HTTPS, FTP, MCP) showing blocked/total.</li>
+                        <li><strong>Test details table</strong> — every test with timestamp, protocol, file/content, and result.</li>
+                        <li><strong>Gaps identified</strong> — automatically detected weaknesses based on test results.</li>
+                        <li><strong>Recommendations</strong> — actionable steps to close the identified gaps.</li>
+                    </ul>
                 </div>
             </section>
 

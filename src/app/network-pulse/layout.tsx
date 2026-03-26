@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Network Telemetry & PMTU Discovery Tool | ITSecTools',
-    description: 'Test your network path stability. Verify Path MTU Discovery, measure network jitter, test packet loss, and validate internet latency directly from your browser.',
+    title: 'Check Your IP, Latency & MTU — Network Pulse | ITSecTools',
+    description: 'See your public IP and location instantly. Test Path MTU, measure jitter and packet loss, check latency to the nearest edge server. Free, no install.',
     alternates: {
         canonical: 'https://itsectools.com/network-pulse',
     },
     openGraph: {
-        title: 'Network Telemetry & PMTU Discovery test | ITSecTools',
-        description: 'Verify Path MTU, network jitter, latency, and packet loss.',
+        title: 'Check Your IP, Latency & MTU | ITSecTools',
+        description: 'Public IP, Path MTU, jitter, latency, and packet loss — tested from your browser.',
+        url: 'https://itsectools.com/network-pulse',
+        siteName: 'ITSecTools',
     }
 };
 

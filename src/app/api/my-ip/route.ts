@@ -6,8 +6,8 @@ export async function GET(request: Request) {
         const forwardedFor = request.headers.get('x-forwarded-for');
         let ip = forwardedFor ? forwardedFor.split(',')[0] : '127.0.0.1';
 
-        // Try to get country from Vercel or Cloudflare headers first
-        let countryCode = request.headers.get('x-vercel-ip-country') || request.headers.get('cf-ipcountry');
+        // Try to get country from CDN/proxy headers (Firebase Hosting uses Fastly which sets x-country-code)
+        let countryCode = request.headers.get('x-country-code') || request.headers.get('x-vercel-ip-country') || request.headers.get('cf-ipcountry');
         let country = 'Unknown';
 
         // Helper to convert 2-letter country code to full name

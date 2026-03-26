@@ -1,9 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { MailIcon, LogoSVG, TargetIcon } from './Icons';
 
-// SVG Icons matching the clean style request
 const NetworkPulseIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
@@ -32,8 +32,6 @@ const LockIcon = () => (
     </svg>
 );
 
-
-
 const HomeIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -41,8 +39,32 @@ const HomeIcon = () => (
     </svg>
 );
 
+const PinIcon = ({ pinned }: { pinned: boolean }) => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill={pinned ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: pinned ? 'rotate(0deg)' : 'rotate(45deg)', transition: 'transform 0.2s ease' }}>
+        <path d="M12 17v5" />
+        <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76z" />
+    </svg>
+);
+
 export default function Sidebar() {
     const pathname = usePathname();
+    const [pinned, setPinned] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        const saved = localStorage.getItem('sidebar-pinned');
+        if (saved === 'true') setPinned(true);
+    }, []);
+
+    const expanded = pinned || hovered;
+
+    const togglePin = () => {
+        const next = !pinned;
+        setPinned(next);
+        localStorage.setItem('sidebar-pinned', String(next));
+    };
 
     const links = [
         { href: '/', label: 'Home', icon: <HomeIcon /> },
@@ -51,45 +73,64 @@ export default function Sidebar() {
         { href: '/ngfw', label: 'NGFW Tests', icon: <ShieldIcon /> },
         { href: '/mitre', label: 'MITRE ATT&CK', icon: <TargetIcon width={20} height={20} /> },
         { href: '/threat-protection', label: 'Threat Gen', icon: <LockIcon /> },
+        { href: '/blog', label: 'Blog', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg> },
         { href: '/help', label: 'Help', icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg> },
         { href: '/contact', label: 'Contact Us', icon: <MailIcon width={20} height={20} /> },
     ];
 
+    // Before mount, render expanded to avoid layout flash (SSR)
+    const isExpanded = !mounted || expanded;
+
     return (
-        <aside className="sidebar">
-            {/* Logo */}
-            <div className="logo-area" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #E2E8F0' }}>
-                <LogoSVG />
-                <div style={{ fontWeight: 700, fontSize: '1.4rem', letterSpacing: '-0.5px' }}>
-                    <span style={{ color: '#0EC7A8' }}>IT</span>
-                    <span style={{ color: '#483D8B' }}>Sec</span>
-                    <span style={{ color: '#0EC7A8' }}>Tools</span>
+        <aside
+            className={`sidebar ${isExpanded ? 'sidebar-expanded' : 'sidebar-collapsed'}`}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
+            {/* Logo + Pin */}
+            <div className="logo-area">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', flexDirection: isExpanded ? 'row' : 'column', gap: isExpanded ? '0.75rem' : '0' }}>
+                    <LogoSVG />
+                    <span className="nav-label" style={{ fontWeight: 700, fontSize: '1.4rem', letterSpacing: '-0.5px', whiteSpace: 'nowrap' }}>
+                        <span style={{ color: '#0EC7A8' }}>IT</span>
+                        <span style={{ color: '#483D8B' }}>Sec</span>
+                        <span style={{ color: '#0EC7A8' }}>Tools</span>
+                    </span>
                 </div>
+                {isExpanded && (
+                    <button
+                        onClick={togglePin}
+                        className="pin-button"
+                        title={pinned ? 'Unpin sidebar' : 'Pin sidebar open'}
+                        aria-label={pinned ? 'Unpin sidebar' : 'Pin sidebar open'}
+                    >
+                        <PinIcon pinned={pinned} />
+                    </button>
+                )}
             </div>
 
-            <nav style={{ padding: '0 1rem' }}>
+            <nav style={{ padding: '0 0.5rem', flex: 1 }}>
                 {links.map((link) => (
                     <Link
                         key={link.href}
                         href={link.href}
                         className={`nav-item ${pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href)) ? 'active' : ''}`}
+                        title={!isExpanded ? link.label : undefined}
                     >
-                        <span style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center' }}>{link.icon}</span>
-                        <span>{link.label}</span>
+                        <span className="nav-icon">{link.icon}</span>
+                        <span className="nav-label">{link.label}</span>
                     </Link>
                 ))}
             </nav>
 
-            <div style={{ marginTop: 'auto', padding: '1.5rem', borderTop: '1px solid #E2E8F0' }}>
-                <div style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#F59E0B' }}>
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                        </svg>
-                        v1.2.0
-                    </span>
-                    <span style={{ marginLeft: 'auto', opacity: 0.5 }}>PRO</span>
-                </div>
+            <div className="sidebar-footer">
+                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#F59E0B', flexShrink: 0 }}>
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span className="nav-label">v1.2.0</span>
+                </span>
+                <span className="nav-label" style={{ marginLeft: 'auto', opacity: 0.5 }}>PRO</span>
             </div>
         </aside>
     );

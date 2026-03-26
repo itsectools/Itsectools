@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'MITRE ATT&CK Kill Chain Simulator | ITSecTools',
-    description: 'Run an interactive MITRE ATT&CK kill chain simulation to validate your NGFW, IPS, and EDR controls. Test Initial Access, Execution, Credential Access, and Exfiltration.',
+    title: 'MITRE ATT&CK Kill Chain Simulator — Free | ITSecTools',
+    description: 'Simulate a 4-stage attack chain — Log4j exploit, PowerShell execution, Mimikatz credential dump, data exfiltration. See which stage your defenses break. Download a kill chain assessment PDF. Free, in-browser.',
     alternates: {
         canonical: 'https://itsectools.com/mitre',
     },
     openGraph: {
-        title: 'MITRE ATT&CK Simulator | ITSecTools',
-        description: 'Interactive MITRE ATT&CK kill chain simulator for testing perimeter defenses.',
+        title: 'MITRE ATT&CK Kill Chain Simulator | ITSecTools',
+        description: 'Simulate a 4-stage attack — from Log4j to data exfiltration. See where your defenses break.',
+        url: 'https://itsectools.com/mitre',
+        siteName: 'ITSecTools',
     }
 };
 
@@ -23,7 +25,8 @@ const jsonLd = {
         'Simulate T1190 Exploit Public-Facing Application (Log4j)',
         'Simulate T1059.001 PowerShell Execution',
         'Simulate T1003.001 OS Credential Dumping (Mimikatz)',
-        'Simulate T1048.003 Exfiltration Over Unencrypted Protocol'
+        'Simulate T1048.003 Exfiltration Over Unencrypted Protocol',
+        'PDF Kill Chain Report with score gauge, stage visualization, risk assessment, and recommendations'
     ]
 };
 
@@ -40,6 +43,11 @@ const faqJsonLd = {
             '@type': 'Question',
             name: 'What MITRE techniques does ITSecTools simulate?',
             acceptedAnswer: { '@type': 'Answer', text: 'ITSecTools simulates T1190 (Exploit Public-Facing Application via Log4j), T1059.001 (PowerShell download cradle), T1003.001 (OS Credential Dumping via Mimikatz strings), and T1048.003 (Exfiltration over unencrypted protocol).' }
+        },
+        {
+            '@type': 'Question',
+            name: 'Can I generate a MITRE ATT&CK simulation report?',
+            acceptedAnswer: { '@type': 'Answer', text: 'Yes. After running the kill chain, click "Generate Report" to download a PDF with a score gauge, stage-by-stage visualization showing where the attack was stopped, risk assessment, and recommendations for closing gaps.' }
         },
         {
             '@type': 'Question',

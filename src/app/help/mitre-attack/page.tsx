@@ -54,25 +54,25 @@ export default function MITREGuide() {
                     <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
                         <h3 style={{ fontSize: '1.05rem', color: '#0F172A', marginBottom: '0.5rem' }}>Stage 1 — Initial Access (T1190)</h3>
                         <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>
-                            Sends a <strong>Log4j JNDI/LDAP payload</strong> in an HTTP header to simulate exploiting a public-facing application. Your IPS/WAF should detect the JNDI lookup pattern.
+                            Sends an <strong>Apache Struts RCE payload (CVE-2017-5638)</strong> with malicious OGNL injection in the HTTP Content-Type header. Tests IPS detection of header-based remote code execution exploits.
                         </p>
                     </div>
                     <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
-                        <h3 style={{ fontSize: '1.05rem', color: '#0F172A', marginBottom: '0.5rem' }}>Stage 2 — Execution (T1059.001)</h3>
+                        <h3 style={{ fontSize: '1.05rem', color: '#0F172A', marginBottom: '0.5rem' }}>Stage 2 — Execution (T1059.004)</h3>
                         <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>
-                            Attempts to <strong>download a malicious .ps1 PowerShell payload</strong> (download cradle). Your firewall should detect and block the PowerShell content.
+                            Sends a <strong>ThinkPHP RCE exploit (CVE-2018-20062)</strong> with a reverse shell download command in the URL path. Tests IPS detection of command execution via vulnerable web frameworks.
                         </p>
                     </div>
                     <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
                         <h3 style={{ fontSize: '1.05rem', color: '#0F172A', marginBottom: '0.5rem' }}>Stage 3 — Credential Access (T1003.001)</h3>
                         <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>
-                            Transmits <strong>Mimikatz strings</strong> over the wire used to dump LSASS credentials. Tests deep packet inspection for credential theft indicators.
+                            Exploits <strong>Pulse Secure VPN (CVE-2019-11510)</strong> arbitrary file reading to access cached cleartext password databases. Tests IPS detection of path traversal-based credential theft.
                         </p>
                     </div>
                     <div style={{ background: '#F8FAFC', borderRadius: '8px', padding: '1.5rem', border: '1px solid #E2E8F0' }}>
                         <h3 style={{ fontSize: '1.05rem', color: '#0F172A', marginBottom: '0.5rem' }}>Stage 4 — Exfiltration (T1048.003)</h3>
                         <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.7, margin: 0 }}>
-                            Extracts <code style={{ background: '#F1F5F9', padding: '0.1rem 0.4rem', borderRadius: '3px' }}>/etc/passwd</code> contents via cleartext query string, simulating data exfiltration over an unencrypted channel.
+                            Injects a <strong>Shellshock payload (CVE-2014-6271)</strong> in HTTP headers to exfiltrate system files via netcat. Tests IPS detection of Bash environment variable injection attacks.
                         </p>
                     </div>
                 </div>

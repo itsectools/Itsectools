@@ -111,17 +111,21 @@ export async function GET(req: Request) {
                 let cvv: string;
 
                 if (roll < 0.60) {
-                    // Visa: starts with 4, 16 digits
-                    cardNum = formatCardNumber(generateLuhnValid('4', 16));
+                    // US Visa: Chase, BofA, Capital One, Wells Fargo
+                    const visaPrefixes = ['414720', '400022', '426684', '473702'];
+                    const visaPrefix = visaPrefixes[Math.floor(Math.random() * visaPrefixes.length)];
+                    cardNum = formatCardNumber(generateLuhnValid(visaPrefix, 16));
                     cvv = Math.floor(100 + Math.random() * 900).toString();
                 } else if (roll < 0.85) {
-                    // Mastercard: starts with 51-55, 16 digits
-                    const mcPrefix = `5${Math.floor(1 + Math.random() * 5)}`;
+                    // US Mastercard: Citi, Capital One
+                    const mcPrefixes = ['546616', '517805', '542418'];
+                    const mcPrefix = mcPrefixes[Math.floor(Math.random() * mcPrefixes.length)];
                     cardNum = formatCardNumber(generateLuhnValid(mcPrefix, 16));
                     cvv = Math.floor(100 + Math.random() * 900).toString();
                 } else {
-                    // Amex: starts with 34 or 37, 15 digits
-                    const amexPrefix = Math.random() < 0.5 ? '34' : '37';
+                    // US Amex
+                    const amexPrefixes = ['3782', '3499'];
+                    const amexPrefix = amexPrefixes[Math.floor(Math.random() * amexPrefixes.length)];
                     cardNum = formatCardNumber(generateLuhnValid(amexPrefix, 15));
                     cvv = Math.floor(1000 + Math.random() * 9000).toString(); // 4-digit CVV for Amex
                 }
@@ -184,10 +188,12 @@ export async function GET(req: Request) {
 
     if (format === 'csv') {
         const content = [headers.join(','), ...matrix.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
-        return new NextResponse(content, {
+        const buffer = Buffer.from(content);
+        return new NextResponse(buffer, {
             headers: {
                 'Content-Type': 'text/csv',
                 'Content-Disposition': `attachment; filename="${filename}"`,
+                'Content-Length': buffer.byteLength.toString(),
             },
         });
     }
@@ -196,12 +202,14 @@ export async function GET(req: Request) {
         const worksheet = xlsx.utils.aoa_to_sheet([headers, ...matrix]);
         const workbook = xlsx.utils.book_new();
         xlsx.utils.book_append_sheet(workbook, worksheet, 'Data');
-        const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+        const rawBuffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+        const buffer = Buffer.from(rawBuffer);
 
         return new NextResponse(buffer, {
             headers: {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition': `attachment; filename="${filename}"`,
+                'Content-Length': buffer.byteLength.toString(),
             },
         });
     }
@@ -225,12 +233,14 @@ export async function GET(req: Request) {
             y -= 15;
         }
 
-        const pdfBytes = await pdfDoc.save();
+        const pdfBytes = await pdfDoc.save({ useObjectStreams: false });
+        const buffer = Buffer.from(pdfBytes);
 
-        return new NextResponse(pdfBytes as unknown as BodyInit, {
+        return new NextResponse(buffer as unknown as BodyInit, {
             headers: {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': `attachment; filename="${filename}"`,
+                'Content-Length': buffer.byteLength.toString(),
             },
         });
     }
@@ -243,18 +253,20 @@ export async function GET(req: Request) {
                         children: [new TextRun({ text: headers.join(' | '), bold: true })]
                     }),
                     ...matrix.map(row => new Paragraph({
-                        children: [new TextRun(row.join(' | '))]
+                        children: [new TextRun({ text: row.join(' | ') })]
                     }))
                 ],
             }],
         });
 
         const buffer = await Packer.toBuffer(doc);
+        const nodeBuffer = Buffer.from(buffer);
 
-        return new NextResponse(buffer as unknown as BodyInit, {
+        return new NextResponse(nodeBuffer as unknown as BodyInit, {
             headers: {
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 'Content-Disposition': `attachment; filename="${filename}"`,
+                'Content-Length': nodeBuffer.byteLength.toString(),
             },
         });
     }

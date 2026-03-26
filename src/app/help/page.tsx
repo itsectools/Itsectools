@@ -4,7 +4,7 @@ const guides = [
     {
         href: '/help/dlp-validator',
         title: 'DLP Validator',
-        description: 'File uploads (HTTP/HTTPS/FTP), download test documents, raw text POST, file metadata & label checker, regex creator & translator, and advanced payload generator.',
+        description: 'File uploads (HTTP/HTTPS/FTP), download test documents, raw text POST, file metadata & label checker, regex creator & translator, advanced payload generator, MCP protocol testing (JSON exfiltration), and PDF validation report.',
         color: '#6366F1',
         bg: '#EEF2FF',
         icon: (
@@ -19,7 +19,7 @@ const guides = [
     {
         href: '/help/ngfw-testing',
         title: 'NGFW Validation',
-        description: 'IPS signature tests (SQLi, XSS, Path Traversal), Advanced Evasion Techniques, C2 beacon simulation, SSL decryption requirements, and console output interpretation.',
+        description: 'IPS signature tests (SQLi, XSS, Path Traversal), Advanced Evasion Techniques, C2 beacon simulation, Run All Tests, Network IP Flooder (30 attacks), IP shun cooldown, console output, and PDF security assessment report.',
         color: '#0EA5E9',
         bg: '#F0F9FF',
         icon: (
@@ -31,7 +31,7 @@ const guides = [
     {
         href: '/help/mitre-attack',
         title: 'MITRE ATT&CK Simulator',
-        description: 'Kill chain concept, T1190 Initial Access, T1059.001 Execution, T1003.001 Credential Access, T1048.003 Exfiltration, and results interpretation.',
+        description: 'Kill chain concept, T1190 Apache Struts RCE, T1059.004 ThinkPHP RCE, T1003.001 Pulse Secure VPN, T1048.003 Shellshock Exfiltration, results interpretation, and PDF kill chain report.',
         color: '#F59E0B',
         bg: '#FFFBEB',
         icon: (
@@ -128,9 +128,9 @@ export default function HelpPage() {
 
                 <h3 style={{ fontSize: '1.1rem', color: '#0F172A', marginBottom: '0.75rem' }}>What Can You Test?</h3>
                 <ul style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 1.5rem 0' }}>
-                    <li><strong>Data Loss Prevention (DLP)</strong> — Upload sensitive test files, inspect metadata labels, build vendor-specific regex patterns, and generate evasion payloads to test Base64 encoding, renamed extensions, encrypted archives, and nested ZIPs.</li>
-                    <li><strong>Next-Generation Firewall (NGFW)</strong> — Send real SQLi, XSS, Log4j, and C2 beacon payloads to verify IPS signatures, evasion detection, and application control.</li>
-                    <li><strong>MITRE ATT&amp;CK Kill Chain</strong> — Execute a sequential attack from Initial Access through Exfiltration to test if your perimeter can break the chain.</li>
+                    <li><strong>Data Loss Prevention (DLP)</strong> — Upload sensitive test files, inspect metadata labels, build vendor-specific regex patterns, generate evasion payloads, and download a scored PDF validation report with gap analysis.</li>
+                    <li><strong>Next-Generation Firewall (NGFW)</strong> — Send real SQLi, XSS, Log4j, Shellshock, and C2 beacon payloads to verify IPS signatures and evasion detection. Download a PDF security assessment with per-category scoring. Includes a 30-attack flood stress test.</li>
+                    <li><strong>MITRE ATT&amp;CK Kill Chain</strong> — Execute a sequential 4-stage attack and download a PDF kill chain report showing where your defenses break.</li>
                     <li><strong>Threat Protection</strong> — Download EICAR, heuristic malware, and ransomware test files to verify endpoint and gateway antivirus detection.</li>
                     <li><strong>Network Pulse</strong> — Identify your public IP, measure latency/jitter/packet loss, discover Path MTU, and get AI-generated security recommendations.</li>
                 </ul>

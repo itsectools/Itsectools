@@ -13,6 +13,7 @@ A free, browser-based security testing platform for validating NGFW, DLP, IPS, a
 - **Run All Tests** — Execute IPS, AET, and C2C suites sequentially (9 total attacks) with configurable IP shun cooldown delay.
 - **Network IP Flooder** — Fire 30 continuous IPS attack patterns (SQL injection, path traversal, encoded traversal, system file disclosure) in rapid succession with no delay. Each request uses a unique URL path and patterns are randomized (Fisher-Yates shuffle) each run. Includes mid-stream body termination detection — catches NGFW blocks that arrive after HTTP 200 headers.
 - **IP Shun Cooldown Delay** — Configurable pause (1s / 6s / 15s / 30s) between IPS/AET/C2C suite attacks to avoid NGFW IP shunning. The Network IP Flooder runs without delay by design.
+- **PDF Assessment Report** — Auto-generated scorecard with score gauge, per-category breakdown (IPS, Evasion, C2, Flood), gap analysis, and remediation recommendations.
 
 ### 2. MITRE ATT&CK Kill Chain Simulator
 - **T1190 — Initial Access:** Apache Struts RCE (CVE-2017-5638) OGNL injection in Content-Type header.
@@ -20,6 +21,7 @@ A free, browser-based security testing platform for validating NGFW, DLP, IPS, a
 - **T1003.001 — Credential Access:** Pulse Secure VPN (CVE-2019-11510) arbitrary file reading for cached credentials.
 - **T1048.003 — Exfiltration:** Shellshock (CVE-2014-6271) system file exfiltration via header injection.
 - Sequential execution with 6s inter-stage delay to avoid IP shunning.
+- **PDF Kill Chain Report** — Stage-by-stage visualization, risk assessment, and recommendations showing where the attack was stopped.
 
 ### 3. DLP (Data Loss Prevention) Tools
 - **File Upload Testing** — Upload sensitive test files over HTTP/HTTPS/FTP to verify DLP blocking.
@@ -29,6 +31,8 @@ A free, browser-based security testing platform for validating NGFW, DLP, IPS, a
 - **Metadata & Label Checker** — Inspect Microsoft Information Protection (MIP) labels from DOCX/XLSX ZIP archives and PDF metadata dictionaries. Content-level DLP pattern matching with MD5/SHA-256 hashing.
 - **Regex Builder & Translator** — Build and translate DLP regex patterns across 10 vendor formats (Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint).
 - **Evasion Payloads** — Base64 encoding, renamed extensions (.docx→.jpg), AES-256 encrypted archives, nested ZIPs (depth testing).
+- **MCP Protocol Testing (JSON Exfiltration)** — Tests DLP detection of sensitive data inside nested JSON-RPC payloads (MCP format). Server generates fresh PII/PCI/PHI data and wraps it at configurable nesting depth (2/4/6 levels). Tests whether network DLP can parse deeply nested JSON structures used by AI agents and modern APIs.
+- **PDF Validation Report** — Auto-generated scorecard with score gauge, protocol coverage matrix, data category breakdown, gap analysis, and actionable recommendations. Client-side generation — no data leaves the browser.
 
 ### 4. Threat Protection Lab
 - **EICAR Test Files** — Standard EICAR antivirus test file in multiple formats (.txt, .zip, .ps1).

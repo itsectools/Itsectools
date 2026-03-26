@@ -1,14 +1,16 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Free Malware Test Files & Threat Protection Validator | ITSecTools',
-    description: 'Download safe EICAR test payloads, heuristic malware simulators, and ransomware behavior scripts to validate your Antivirus and Endpoint Detection & Response (EDR) solutions.',
+    title: 'Download EICAR & Malware Test Files — Free | ITSecTools',
+    description: 'Download safe EICAR files, heuristic malware samples, and ransomware behavior scripts. Does your AV or EDR catch them? Find out in seconds.',
     alternates: {
         canonical: 'https://itsectools.com/threat-protection',
     },
     openGraph: {
-        title: 'Free Threat Protection Testing Tool | ITSecTools',
-        description: 'Safely validate your AV and EDR solutions with benign malware test payloads and ransomware behaviors.',
+        title: 'Download EICAR & Malware Test Files | ITSecTools',
+        description: 'Safe EICAR, heuristic malware, and ransomware test files. Validate your AV/EDR in seconds.',
+        url: 'https://itsectools.com/threat-protection',
+        siteName: 'ITSecTools',
     }
 };
 

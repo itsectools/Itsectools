@@ -84,6 +84,16 @@ Detailed feature-by-feature documentation for every tool:
 - Threat Generation Guide: https://itsectools.com/help/threat-generation — EICAR test files, heuristic malware samples, ransomware simulator.
 - Network Pulse Guide: https://itsectools.com/help/network-pulse — Public IP detection, latency, jitter, packet loss, Path MTU discovery, AI security insights.
 
+## Blog
+Practical guides and tutorials on security testing:
+- How to Test Your DLP Policy — Free Tool & Complete Guide: https://itsectools.com/blog/test-dlp-policy-free-tool-guide
+- Free EICAR Test File Download — All Formats: https://itsectools.com/blog/eicar-test-file-download
+- DLP Regex Builder for Forcepoint, Symantec, Zscaler & 7 More: https://itsectools.com/blog/dlp-regex-builder-vendors
+- How to Validate NGFW IPS Signatures — Step-by-Step: https://itsectools.com/blog/ngfw-ips-signature-validation
+- MITRE ATT&CK Kill Chain Testing — Free Browser-Based Simulator: https://itsectools.com/blog/mitre-attack-kill-chain-testing
+- ITSecTools vs Other DLP Testing Tools — Feature Comparison: https://itsectools.com/blog/itsectools-vs-dlp-testing-tools
+
 ## Resources
 - Help Center: https://itsectools.com/help
+- Blog: https://itsectools.com/blog
 - Contact: https://itsectools.com/contact
