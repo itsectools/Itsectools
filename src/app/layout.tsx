@@ -11,11 +11,11 @@ const inter = Inter({ subsets: ['latin'], display: 'swap' });
 export const metadata: Metadata = {
   metadataBase: new URL('https://itsectools.com'),
   title: 'ITSecTools — Free DLP & Firewall Testing Toolkit',
-  description: 'Test your DLP policies, stress-test your firewall, and validate endpoint security — all from the browser. Upload sensitive files, run IPS attack simulations, and generate vendor-specific regex. Free, no signup.',
+  description: 'Test DLP policies across HTTP, HTTPS, FTP, and MCP/JSON protocols. Run IPS attack simulations, test nested JSON exfiltration (AI agent data leakage), and generate vendor-specific regex. Advanced DLP tests no other tool offers. Free, no signup.',
   authors: [{ name: 'ITSecTools Team' }],
   openGraph: {
     title: 'ITSecTools — Free DLP & Firewall Testing Toolkit',
-    description: 'Upload a file, see if your DLP catches it. Run attack payloads against your firewall. Generate regex for 10 DLP vendors. Free, no signup.',
+    description: 'Test DLP with MCP/JSON exfiltration, file uploads, and Advanced DLP tests no competitor offers. Run IPS attacks against your firewall. Free, no signup.',
     url: 'https://itsectools.com',
     siteName: 'ITSecTools',
     locale: 'en_US',
@@ -51,6 +51,7 @@ const jsonLd = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   featureList: [
     'DLP Validator — test data leakage across HTTP, HTTPS, FTP with fresh PII/PCI/PHI documents',
+    'Advanced DLP Tests — MCP Protocol Testing for nested JSON/API exfiltration (unique, no competitor offers this)',
     'DLP Regex Builder — generate and translate regex for 10 vendor engines',
     'NGFW & IPS Tester — SQLi, XSS, evasion, and C2 attack simulations',
     'MITRE ATT&CK Simulator — 4-stage kill chain from Initial Access to Exfiltration',

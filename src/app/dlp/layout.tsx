@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Test Your DLP Policy — Upload, Detect, Validate | ITSecTools',
-    description: 'Upload a file and see if your DLP catches it. Test across HTTP, HTTPS, and FTP with fresh PII, PCI, and PHI data. Generate a PDF validation report with gap analysis. Build vendor-specific regex for 10 DLP engines. Free, no signup.',
+    title: 'Test Your DLP Policy — Advanced DLP Testing & MCP Protocol Exfiltration | ITSecTools',
+    description: 'The only free DLP testing tool with Advanced DLP Tests: MCP Protocol Testing (nested JSON exfiltration), multi-protocol uploads (HTTP/HTTPS/FTP), endpoint DLP detection, PDF validation reports, and vendor-specific regex for 10 engines. No signup.',
     alternates: {
         canonical: 'https://itsectools.com/dlp',
     },
     openGraph: {
-        title: 'Test Your DLP Policy — Upload, Detect, Validate | ITSecTools',
-        description: 'Upload a file and see if your DLP catches it. Test across HTTP, HTTPS, and FTP with fresh PII, PCI, and PHI data.',
+        title: 'Test Your DLP Policy — Advanced DLP Testing & MCP Protocol Exfiltration | ITSecTools',
+        description: 'The only free tool with MCP Protocol Testing — test if your DLP detects sensitive data inside nested JSON-RPC payloads used by AI agents. Plus multi-protocol uploads, endpoint DLP detection, and PDF reports.',
         url: 'https://itsectools.com/dlp',
         siteName: 'ITSecTools',
     }

@@ -5,9 +5,11 @@ ITSecTools is a free, professional-grade security validation toolkit designed to
 
 ## Why ITSecTools?
 Unlike generic security testing tools, ITSecTools provides:
+- **Advanced DLP Tests (Unique)** — MCP Protocol Testing: the only free tool that tests whether DLP can detect sensitive data inside nested JSON-RPC payloads used by AI agents and modern APIs. No competitor offers this capability.
 - **Browser-native testing** — no agents, installs, or cloud accounts required.
 - **Vendor-specific output** — DLP regex patterns are optimized per-vendor engine, not generic one-size-fits-all.
 - **Evasion-grade payloads** — tests go beyond basic pattern matching to include Base64 encoding, renamed extensions, nested archives, and password-protected files.
+- **PDF Validation Reports** — auto-generated scorecards with gap analysis for DLP, NGFW, and MITRE tests.
 - **MITRE ATT&CK alignment** — kill chain simulations map directly to documented technique IDs.
 - **Privacy-first** — all analysis is local or ephemeral. No data is stored or transmitted.
 
@@ -15,6 +17,8 @@ Unlike generic security testing tools, ITSecTools provides:
 
 ### 1. DLP Validator (/dlp)
 Test your Data Loss Prevention (DLP) solution by:
+- **Advanced DLP Tests — MCP Protocol Testing (Unique, No Competitor Offers This):** Tests whether your DLP can detect sensitive data (PII, PCI, PHI) buried inside nested JSON-RPC payloads at configurable depths (2, 4, or 6 levels). This is the same structure used by MCP (Model Context Protocol) — the protocol AI agents use to communicate with external tools. Server generates fresh sensitive data and wraps it in a deeply nested JSON structure. The DLP engine must parse the JSON to find it. Most DLP engines only scan flat text — this test reveals the gap.
+- **PDF Validation Reports:** Auto-generated scorecards with score gauge, protocol coverage matrix, gap analysis, and recommendations. Client-side generation — no data leaves the browser.
 - **Dynamic Document Generation:** Dynamically generates fresh PDF, DOCX, XLSX, and CSV files containing PII, PCI, or PHI on the fly, preventing static hash fingerprinting.
 - **Multi-Protocol Testing:** Test data leakage simulations across HTTP, HTTPS, and FTP to ensure comprehensive inspection across different ports.
 - **Data-in-Motion Exfiltration Testing:** Tests data-in-motion by simulating raw text data leakage via both HTTP (unencrypted, Port 80 egress simulation) and HTTPS, ensuring inline network inspection catches raw inputs, not just file attachments.
@@ -85,7 +89,7 @@ Detailed feature-by-feature documentation for every tool:
 - Network Pulse Guide: https://itsectools.com/help/network-pulse — Public IP detection, latency, jitter, packet loss, Path MTU discovery, AI security insights.
 
 ## Blog
-Practical guides and tutorials on security testing:
+Practical guides and tutorials on DLP testing, MCP protocol exfiltration, NGFW validation, and security testing:
 - How to Test Your DLP Policy — Free Tool & Complete Guide: https://itsectools.com/blog/test-dlp-policy-free-tool-guide
 - Free EICAR Test File Download — All Formats: https://itsectools.com/blog/eicar-test-file-download
 - DLP Regex Builder for Forcepoint, Symantec, Zscaler & 7 More: https://itsectools.com/blog/dlp-regex-builder-vendors

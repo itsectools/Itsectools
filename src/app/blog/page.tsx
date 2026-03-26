@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: 'Blog — Security Testing Guides & Tutorials | ITSecTools',
-    description: 'Practical guides on DLP policy testing, NGFW IPS validation, MITRE ATT&CK simulation, DLP regex building, and EICAR test files. Free tools with step-by-step tutorials.',
+    description: 'Practical guides on DLP policy testing, MCP protocol exfiltration, Advanced DLP tests, NGFW IPS validation, MITRE ATT&CK simulation, and DLP regex building. Free tools with tutorials.',
 };
 
 const blogPosts = [
@@ -30,7 +30,7 @@ const blogPosts = [
     {
         slug: 'test-dlp-policy-free-tool-guide',
         title: 'How to Test Your DLP Policy — Find the Gaps Before Attackers Do',
-        description: 'Your DLP says it\'s working. But is it catching PDFs with embedded SSNs? Encrypted ZIPs? Base64-encoded files? 5 blind spots most DLP policies miss — test them for free and download a scored validation report.',
+        description: 'Your DLP says it\'s working. But can it detect SSNs inside nested JSON? Encrypted ZIPs? MCP protocol exfiltration? 5 blind spots including Advanced DLP tests — free with PDF validation report.',
         date: 'Jan 24, 2026',
         readingTime: '10 min read',
         category: 'DLP',

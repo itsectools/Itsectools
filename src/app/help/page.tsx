@@ -128,7 +128,7 @@ export default function HelpPage() {
 
                 <h3 style={{ fontSize: '1.1rem', color: '#0F172A', marginBottom: '0.75rem' }}>What Can You Test?</h3>
                 <ul style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.8, paddingLeft: '1.25rem', margin: '0 0 1.5rem 0' }}>
-                    <li><strong>Data Loss Prevention (DLP)</strong> — Upload sensitive test files, inspect metadata labels, build vendor-specific regex patterns, generate evasion payloads, and download a scored PDF validation report with gap analysis.</li>
+                    <li><strong>Data Loss Prevention (DLP)</strong> — Upload sensitive test files, test MCP/JSON protocol exfiltration (Advanced DLP Tests — unique, no competitor offers this), inspect metadata labels, build vendor-specific regex, generate evasion payloads, and download scored PDF validation reports.</li>
                     <li><strong>Next-Generation Firewall (NGFW)</strong> — Send real SQLi, XSS, Log4j, Shellshock, and C2 beacon payloads to verify IPS signatures and evasion detection. Download a PDF security assessment with per-category scoring. Includes a 30-attack flood stress test.</li>
                     <li><strong>MITRE ATT&amp;CK Kill Chain</strong> — Execute a sequential 4-stage attack and download a PDF kill chain report showing where your defenses break.</li>
                     <li><strong>Threat Protection</strong> — Download EICAR, heuristic malware, and ransomware test files to verify endpoint and gateway antivirus detection.</li>

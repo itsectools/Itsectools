@@ -80,7 +80,7 @@ export default function HomeClient() {
                     </div>
                     <h3 className="card-title">DLP Validator</h3>
                     <p className="card-desc">
-                        Test your DLP solution by uploading sensitive files across multiple channels, downloading sample files, generating evasive payloads, and verifying file labeling and policy enforcement.
+                        Test DLP across HTTP, HTTPS, FTP, and MCP/JSON protocols. Includes Advanced DLP Tests for nested JSON exfiltration — the only free tool that tests AI agent data leakage via MCP Protocol.
                     </p>
                     <div className="card-link">
                         Start Inspection <ArrowRightIcon width={16} height={16} className="ml-2" />
