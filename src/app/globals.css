@@ -1017,7 +1017,7 @@ div[class*="build-activity"] {
 
 /* --- Blog Enhancements --- */
 .blog-image-wrapper {
-  max-width: 800px;
+  max-width: 720px;
   margin: 2.5rem auto;
   border-radius: 12px;
   overflow: hidden;

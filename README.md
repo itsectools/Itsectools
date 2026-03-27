@@ -31,7 +31,7 @@ A free, browser-based security testing platform for validating NGFW, DLP, IPS, a
 - **Metadata & Label Checker** — Inspect Microsoft Information Protection (MIP) labels from DOCX/XLSX ZIP archives and PDF metadata dictionaries. Content-level DLP pattern matching with MD5/SHA-256 hashing.
 - **Regex Builder & Translator** — Build and translate DLP regex patterns across 10 vendor formats (Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint).
 - **Evasion Payloads** — Base64 encoding, renamed extensions (.docx→.jpg), AES-256 encrypted archives, nested ZIPs (depth testing).
-- **MCP Protocol Testing (JSON Exfiltration)** — Tests DLP detection of sensitive data inside nested JSON-RPC payloads (MCP format). Server generates fresh PII/PCI/PHI data and wraps it at configurable nesting depth (2/4/6 levels). Tests whether network DLP can parse deeply nested JSON structures used by AI agents and modern APIs.
+- **Nested JSON Exfiltration (MCP/API Payloads)** — Tests DLP detection of sensitive data inside deeply nested JSON structures used by AI agents (MCP), REST APIs, and GraphQL mutations. Server generates fresh PII/PCI/PHI data and wraps it at configurable nesting depth (2/4/6 levels). Tests whether network DLP can parse structured payloads to find hidden sensitive data.
 - **PDF Validation Report** — Auto-generated scorecard with score gauge, protocol coverage matrix, data category breakdown, gap analysis, and actionable recommendations. Client-side generation — no data leaves the browser.
 
 ### 4. Threat Protection Lab
