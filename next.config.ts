@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
     // Disable trailing slashes for clean URLs
     trailingSlash: false,
 
+    // Disable dev indicators
+    devIndicators: false,
+
     // Security and SEO headers
     async headers() {
         return [
