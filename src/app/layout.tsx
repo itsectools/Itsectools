@@ -10,11 +10,11 @@ const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://itsectools.com'),
-  title: 'ITSecTools — Free DLP & Firewall Testing Toolkit',
+  title: 'Free DLP & Firewall Testing Tool | ITSecTools',
   description: 'Test DLP policies across HTTP, HTTPS, FTP with nested JSON exfiltration testing for MCP/API payloads. Run IPS attack simulations and generate vendor-specific regex. Advanced DLP tests no other tool offers. Free, no signup.',
   authors: [{ name: 'ITSecTools Team' }],
   openGraph: {
-    title: 'ITSecTools — Free DLP & Firewall Testing Toolkit',
+    title: 'Free DLP & Firewall Testing Tool | ITSecTools',
     description: 'Test DLP with nested JSON exfiltration (MCP/API payloads), file uploads, and Advanced DLP tests no competitor offers. Run IPS attacks against your firewall. Free, no signup.',
     url: 'https://itsectools.com',
     siteName: 'ITSecTools',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ITSecTools — Free DLP & Firewall Testing Toolkit',
+    title: 'Free DLP & Firewall Testing Tool | ITSecTools',
     description: 'Upload a file, see if your DLP catches it. Run IPS attacks against your firewall. Free, in-browser, no signup.',
   },
   alternates: {
