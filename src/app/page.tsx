@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 import {
     PulseIcon,
     ShieldIcon,
@@ -11,11 +10,7 @@ import {
     CheckCircleIcon,
     TargetIcon
 } from '@/components/Icons';
-
-const IpWidget = dynamic(() => import('@/components/IpWidget'), {
-    ssr: false,
-    loading: () => <div style={{ height: '80px', width: '250px', background: '#f1f5f9', borderRadius: '12px', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }} />
-});
+import IpWidgetLoader from '@/components/IpWidgetLoader';
 
 export default function Home() {
     return (
@@ -30,7 +25,7 @@ export default function Home() {
                     </span>
                 </div>
                 <div className="header-widget-area">
-                    <IpWidget />
+                    <IpWidgetLoader />
                 </div>
             </header>
 
