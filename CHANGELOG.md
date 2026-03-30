@@ -8,8 +8,8 @@ All notable changes to ITSecTools are documented here.
 - **Regex Engine Tools** — Build and translate DLP regex patterns across 10 vendor engines (Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint)
 - **Regex Creator** with 27 match types and auto-analysis
 - **Regex Translator & Tester** with vendor-specific syntax translation and failure diagnostics
-- **File Label Identifier** — Deep-scans DOCX/XLSX for MIP classification labels, PDF metadata scanning, content-level PII/PCI/PHI detection
-- **Advanced Payload Generator** — Renamed file extensions, Base64 encoder/decoder, password-protected ZIP (AES), nested archives (1–10 layers)
+- **Label & Classification Check** — Deep-scans DOCX/XLSX for MIP classification labels, PDF metadata scanning, content-level PII/PCI/PHI detection
+- **Evasive Payload Download** — Renamed file extensions, Base64 encoder/decoder, password-protected ZIP (AES), nested archives (1–10 layers)
 - File hashing (MD5, SHA-256) for integrity verification
 - Color-coded classification results (Confidential/Internal/Public)
 - Help Center with detailed guides for every tool
