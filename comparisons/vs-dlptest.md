@@ -54,33 +54,21 @@ DLPTest.com is the tool most people think of first. It's been around for years a
 
 ITSecTools takes a fundamentally different approach. Instead of being just a DLP tester, it's a complete security validation platform covering DLP, NGFW, IPS, MITRE ATT&CK, threat generation, and network telemetry — all from one browser tab.
 
-**DLP Validator:**
-- Multi-protocol file upload testing (HTTP, HTTPS, FTP) — all built into the browser, no FileZilla needed
-- Dynamic document generation — creates fresh PDF, DOCX, XLSX, and CSV files containing PII, PCI, or PHI data on the fly. Every file is unique, preventing hash-based fingerprinting
-- HTTP/S POST simulation for testing inline inspection
-- File Label Identifier — deep-scans DOCX/XLSX files for Microsoft Information Protection (MIP) classification labels, PDF metadata for sensitivity properties, and performs content-level PII/PCI detection with MD5 and SHA-256 hashing
-- Data download with multiple file formats
+**DLP Validator — 7-Step Workflow:**
 
-**Endpoint DLP Agent Detection *(Unique)*:**
-- The only free DLP testing tool that detects and reports when an Endpoint DLP agent blocks file uploads at the browser level — even in inline/proxy mode
-- Clearly distinguishes endpoint-level blocks from network/proxy DLP blocks with actionable output messages
-- Compatible with Forcepoint DLP, Symantec Endpoint DLP, and other endpoint agents
-- No other free tool (including DLPTest.com) offers this visibility
+1. **Download Test Files** — Dynamic document generation (PDF, DOCX, XLSX, CSV) with PII, PCI, PHI data and sensitivity labels. Each file is unique, preventing hash-based fingerprinting. Also validates proxy/inline DLP by testing content inspection during HTTPS transit.
 
-**Proxy Mode DLP Validation:**
-- Downloads dynamically generated documents over HTTPS to validate DLP configured in proxy/inline mode
-- Tests whether the DLP engine can parse DOCX, PDF, XLSX, and CSV to detect embedded sensitive data in transit
+2. **Evasive Payload Download** — Renamed file extensions (.docx→.jpg) for magic number detection testing, Base64 encoding, AES-encrypted ZIP archives (fail-close vs. fail-open), and nested archives (1–10 ZIP layers for depth testing).
 
-**Advanced Payload Generator (Evasion Testing):**
-- Renamed file extensions — generates valid DOCX documents saved as .jpg, .png, .pdf, or .txt to test true file typing (magic number detection)
-- Base64 encoder/decoder — tests whether inline DLP can decode obfuscated payloads
-- Password-protected ZIP archives (AES-encrypted) — tests fail-close vs. fail-open policies
-- Nested archives — wraps sensitive data in 1–10 layers of ZIP compression to test extraction depth limits
+3. **Label & Classification Check** *(optional)* — Deep-scans DOCX/XLSX for MIP classification labels, PDF metadata for sensitivity properties, content-level PII/PCI detection, and MD5/SHA-256 hashing.
 
-**Cross-Vendor Regex Engine Tools:**
-- Regex Creator — paste sample data, auto-analyze it into segments, and generate vendor-optimized regex
-- Regex Translator — translate any regex across 10 DLP engines: Forcepoint DLP, Forcepoint DSPM, Symantec DLP, Palo Alto Networks, Zscaler, Netskope, Trellix DLP, Fortinet, Microsoft Purview, and Proofpoint
-- Failure diagnostics that pinpoint exactly which token broke and where
+4. **Data Leakage Simulator** — Multi-protocol file upload (HTTP, HTTPS, FTP) and raw text POST — all browser-native, no FileZilla needed. Detects and displays block status when a DLP agent intercepts browser uploads — the only free tool that distinguishes endpoint-level blocks from network/proxy blocks. Compatible with Forcepoint, Symantec, and other endpoint agents.
+
+5. **Advanced DLP Tests** — Tests DLP detection of sensitive data inside deeply nested JSON structures used by AI agents (MCP), REST APIs, and GraphQL mutations. Configurable nesting depth (2/4/6 levels).
+
+6. **Generate & Share Report** — Auto-generated PDF scorecard with score gauge, protocol coverage, gap analysis, and recommendations. Client-side — no data leaves the browser.
+
+7. **DLP Regex Builder** — Regex Creator and Translator across 10 DLP engines (Forcepoint DLP, Forcepoint DSPM, Symantec DLP, Palo Alto Networks, Zscaler, Netskope, Trellix DLP, Fortinet, Microsoft Purview, Proofpoint) with failure diagnostics that pinpoint exactly which token broke.
 
 **Beyond DLP:**
 - NGFW Validation — IPS signature testing (SQLi, XSS, Path Traversal), Advanced Evasion Techniques (Log4j, Shellshock), C2C beacon simulation

@@ -5,7 +5,8 @@ ITSecTools is a free, professional-grade security validation toolkit designed to
 
 ## Why ITSecTools?
 Unlike generic security testing tools, ITSecTools provides:
-- **Advanced DLP Tests (Unique)** — MCP Protocol Testing: the only free tool that tests whether DLP can detect sensitive data inside nested JSON-RPC payloads used by AI agents and modern APIs. No competitor offers this capability.
+- **7-Step DLP Validation Workflow** — structured testing from file downloads through evasion payloads, data leakage simulation, nested JSON exfiltration, report generation, and regex building.
+- **Advanced DLP Tests** — the only free tool that tests whether DLP can detect sensitive data inside deeply nested JSON structures used by AI agents (MCP), REST APIs, and GraphQL mutations.
 - **Browser-native testing** — no agents, installs, or cloud accounts required.
 - **Vendor-specific output** — DLP regex patterns are optimized per-vendor engine, not generic one-size-fits-all.
 - **Evasion-grade payloads** — tests go beyond basic pattern matching to include Base64 encoding, renamed extensions, nested archives, and password-protected files.
@@ -15,36 +16,41 @@ Unlike generic security testing tools, ITSecTools provides:
 
 ## Key Features
 
-### 1. DLP Validator (/dlp)
-Test your Data Loss Prevention (DLP) solution by:
-- **Advanced DLP Tests — MCP Protocol Testing (Unique, No Competitor Offers This):** Tests whether your DLP can detect sensitive data (PII, PCI, PHI) buried inside nested JSON-RPC payloads at configurable depths (2, 4, or 6 levels). This is the same structure used by MCP (Model Context Protocol) — the protocol AI agents use to communicate with external tools. Server generates fresh sensitive data and wraps it in a deeply nested JSON structure. The DLP engine must parse the JSON to find it. Most DLP engines only scan flat text — this test reveals the gap.
-- **PDF Validation Reports:** Auto-generated scorecards with score gauge, protocol coverage matrix, gap analysis, and recommendations. Client-side generation — no data leaves the browser.
-- **Dynamic Document Generation:** Dynamically generates fresh PDF, DOCX, XLSX, and CSV files containing PII, PCI, or PHI on the fly, preventing static hash fingerprinting.
-- **Multi-Protocol Testing:** Test data leakage simulations across HTTP, HTTPS, and FTP to ensure comprehensive inspection across different ports.
-- **Data-in-Motion Exfiltration Testing:** Tests data-in-motion by simulating raw text data leakage via both HTTP (unencrypted, Port 80 egress simulation) and HTTPS, ensuring inline network inspection catches raw inputs, not just file attachments.
+### 1. DLP Validator — 7-Step Workflow (/dlp)
+Test your Data Loss Prevention (DLP) solution using a structured 7-step workflow:
 
-**File Label Identifier & Classification Checker (Unique):**
-Most tools stop at file type detection. ITSecTools goes further by deep-scanning uploaded documents to detect sensitivity labels and classification markings:
-- **DOCX/XLSX Classification Extraction:** Parses the ZIP archive structure to locate `docProps/custom.xml` and reads Microsoft Information Protection (MIP) classification labels (e.g., Confidential, Internal, Public, Top Secret) — no external libraries required.
-- **PDF Metadata Dictionary Scanning:** Extracts classification and label properties directly from PDF metadata dictionaries using raw binary parsing.
-- **DLP Pattern Matching:** If no explicit label is found, performs content-level analysis for PII (SSN patterns), PCI (credit card numbers), and keyword-based classification (confidential, restricted, proprietary, etc.).
-- **File Hashing:** Computes MD5 and SHA-256 hashes for file integrity verification and threat intel lookups.
-- **Sensitivity Color Coding:** Results are visually color-coded — Red for Confidential/Secret, Blue for Internal, Green for Public — with classification tags for audit trail.
-- **Zero-Upload Privacy:** Files are analyzed server-side via ephemeral stateless functions. No file content is stored, logged, or persisted.
+**Step 1: Download Test Files**
+Dynamically generates fresh PDF, DOCX, XLSX, and CSV files containing PII, PCI, or PHI on the fly, preventing static hash fingerprinting. Includes sensitivity-labeled files (Confidential, Internal, Public) with embedded MIP labels. Also validates proxy/inline DLP by testing whether the DLP engine intercepts and inspects file content during HTTPS transit.
 
-**DLP Test Data Generator Toolset (Evasion Testing):**
-The platform features a specialized toolset for testing evasion detection:erates valid documents containing sensitive data saved with fake extensions (e.g., .jpg) to verify True File Typing.
-- **Base64 Encoder/Decoder:** Obfuscates sensitive strings into Base64 format to test native decoding capabilities of inline network appliances.
-- **Password-Protected Archives:** Generates AES-encrypted ZIP files containing sensitive data to test fail-close or fail-open archive inspection policies.
-- **Nested Archives (Archive Depth Limit Testing):** Wraps sensitive data in multiple layers of ZIP compression to test maximum archive extraction depth limits.
+**Step 2: Evasive Payload Download**
+Generate real test files that challenge DLP inspection depth:
+- **Renamed Extensions:** Valid DOCX saved as .jpg/.png to test magic number (true file type) detection.
+- **Base64 Encoding:** Obfuscates sensitive strings to test native Base64 decoding capabilities.
+- **Password-Protected Archives:** AES-encrypted ZIP files to test fail-close vs. fail-open policies.
+- **Nested Archives:** 1–10 layers of ZIP compression to test maximum extraction depth limits.
 
-**Regex Tools (Vendor-Aware Regex Builder & Translator):**
-- **Regex Creator:** Enter a compliance test data string (e.g., MRN:1234567), auto-analyze its structure into segments (letters, digits, separators), customize match types and quantities, and generate a regex pattern optimized for a specific DLP vendor.
-- **Regex Translator & Tester:** Paste any regex, select a target vendor, and get the pattern translated for that vendor's regex engine. Test it against sample strings with instant match/no-match diagnostics.
-- **10 Vendor Engines Supported:** Forcepoint DLP, Forcepoint DSPM, Symantec DLP, Palo Alto Networks, Zscaler, Netskope, Trellix DLP, Fortinet, Microsoft Purview, and Proofpoint — each with documented engine-specific transformations.
-- **27 Match Types:** Digits, letters (upper/lower), word characters, whitespace, special characters, exact text, character sets, ranges, and more.
-- **Failure Diagnostics:** When a test string doesn't match, the tool progressively walks each regex token against the input and pinpoints exactly which part failed and where.
-- **Plain English Explanations:** Every generated regex includes a step-by-step "How It Works" breakdown in plain language, not regex syntax.
+**Step 3: Label & Classification Check** *(optional)*
+Deep-scan documents for sensitivity labels and classification markings:
+- **DOCX/XLSX Label Extraction:** Reads MIP labels from `docProps/custom.xml` (Confidential, Internal, Public, Top Secret).
+- **PDF Metadata Scanning:** Extracts classification properties from PDF metadata dictionaries.
+- **Content-Level DLP Matching:** Scans for PII (SSN), PCI (credit cards), and keyword-based classification.
+- **File Hashing:** MD5 and SHA-256 for verification and threat intel lookups.
+- **Color-Coded Results:** Red (Confidential/Secret), Blue (Internal), Green (Public).
+
+**Step 4: Data Leakage Simulator**
+Upload files over HTTP, HTTPS, and FTP, and send raw text POST payloads to test whether DLP blocks data in transit across all protocols. Detects and displays block status when a DLP agent intercepts browser uploads — the only free tool that distinguishes endpoint-level blocks from network/proxy DLP blocks. Compatible with Forcepoint, Symantec, and other endpoint agents.
+
+**Step 5: Advanced DLP Tests**
+Tests whether DLP can detect sensitive data (PII, PCI, PHI) buried inside deeply nested JSON structures at configurable depths (2, 4, or 6 levels). Uses the same format as AI agents (MCP), REST APIs, and GraphQL mutations. Server generates fresh sensitive data and wraps it in nested JSON. Most DLP engines only scan flat text — this test reveals the gap.
+
+**Step 6: Generate & Share Report**
+Auto-generated PDF scorecard with score gauge, protocol coverage matrix, gap analysis, and actionable recommendations. Client-side generation — no data leaves the browser.
+
+**Step 7: DLP Regex Builder**
+- **Regex Creator:** Enter a sample string (e.g., MRN:1234567), auto-analyze its structure, customize match types, and generate vendor-optimized regex.
+- **Regex Translator:** Paste any regex, select a target vendor, and get the pattern translated with instant match/no-match diagnostics.
+- **10 Vendor Engines:** Forcepoint DLP, Forcepoint DSPM, Symantec DLP, Palo Alto Networks, Zscaler, Netskope, Trellix DLP, Fortinet, Microsoft Purview, Proofpoint.
+- **27 Match Types** with failure diagnostics and plain English explanations.
 
 ### 2. Threat Generation (/threat-protection)
 Safe malware simulation for rigorously testing network and endpoint security solutions:
@@ -82,7 +88,7 @@ Real-time telemetry, latency analysis, and connection health monitoring:
 ## Help & User Guides
 Detailed feature-by-feature documentation for every tool:
 - Threat Protection Guide: https://itsectools.com/help/threat-generation — Malware simulation, evasion techniques, malicious macros.
-- DLP Validator Guide: https://itsectools.com/help/dlp-validator — File uploads, downloads, text POST, metadata checker, regex creator, regex translator, DLP test data generator.
+- DLP Validator Guide: https://itsectools.com/help/dlp-validator — 7-step workflow: Download Test Files, Evasive Payload Download, Label & Classification Check, Data Leakage Simulator, Advanced DLP Tests, Generate & Share Report, DLP Regex Builder.
 - NGFW Testing Guide: https://itsectools.com/help/ngfw-testing — IPS signature tests, advanced evasion techniques, C2 beacon simulation, console output interpretation.
 - MITRE ATT&CK Guide: https://itsectools.com/help/mitre-attack — Kill chain concept, T1190, T1059.001, T1003.001, T1048.003 stages, results interpretation.
 - Threat Generation Guide: https://itsectools.com/help/threat-generation — EICAR test files, heuristic malware samples, ransomware simulator.
@@ -91,8 +97,9 @@ Detailed feature-by-feature documentation for every tool:
 ## Blog
 Practical guides and tutorials on DLP testing, MCP protocol exfiltration, NGFW validation, and security testing:
 - How to Test Your DLP Policy — Free Tool & Complete Guide: https://itsectools.com/blog/test-dlp-policy-free-tool-guide
-- Free EICAR Test File Download — All Formats: https://itsectools.com/blog/eicar-test-file-download
+- Your DLP Passes Every Test but Misses Real Exfiltration: https://itsectools.com/blog/dlp-false-confidence-testing
 - DLP Regex Builder for Forcepoint, Symantec, Zscaler & 7 More: https://itsectools.com/blog/dlp-regex-builder-vendors
+- Free EICAR Test File Download — All Formats: https://itsectools.com/blog/eicar-test-file-download
 - How to Validate NGFW IPS Signatures — Step-by-Step: https://itsectools.com/blog/ngfw-ips-signature-validation
 - MITRE ATT&CK Kill Chain Testing — Free Browser-Based Simulator: https://itsectools.com/blog/mitre-attack-kill-chain-testing
 - ITSecTools vs Other DLP Testing Tools — Feature Comparison: https://itsectools.com/blog/itsectools-vs-dlp-testing-tools

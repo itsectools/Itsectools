@@ -23,16 +23,14 @@ A free, browser-based security testing platform for validating NGFW, DLP, IPS, a
 - Sequential execution with 6s inter-stage delay to avoid IP shunning.
 - **PDF Kill Chain Report** — Stage-by-stage visualization, risk assessment, and recommendations showing where the attack was stopped.
 
-### 3. DLP (Data Loss Prevention) Tools
-- **File Upload Testing** — Upload sensitive test files over HTTP/HTTPS/FTP to verify DLP blocking.
-- **Endpoint DLP Agent Detection** *(Unique)* — The only free DLP testing tool that detects and reports when an Endpoint DLP agent (Forcepoint, Symantec) blocks file uploads at the browser level — even in inline/proxy mode. Clearly distinguishes endpoint-level blocks from network/proxy DLP blocks with actionable output messages.
-- **Document Generation** — Generate DOCX/PDF/XLSX/CSV with 100 rows of realistic PII (SSN, Driver License, Passport), PCI (Luhn-valid Visa/MC/Amex), or PHI (ICD-10 codes, prescriptions) data. Each download is dynamically generated to prevent static hash fingerprinting.
-- **Proxy Mode DLP Validation** — Downloads dynamically generated documents over HTTPS. Tests whether proxy/inline DLP can parse DOCX (OOXML ZIP), PDF (content streams), XLSX, and CSV to detect embedded sensitive data. CSV/XLSX are detected by most DLP engines; DOCX/PDF require deeper file parsing that not all proxy DLP solutions support.
-- **Metadata & Label Checker** — Inspect Microsoft Information Protection (MIP) labels from DOCX/XLSX ZIP archives and PDF metadata dictionaries. Content-level DLP pattern matching with MD5/SHA-256 hashing.
-- **Regex Builder & Translator** — Build and translate DLP regex patterns across 10 vendor formats (Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint).
-- **Evasion Payloads** — Base64 encoding, renamed extensions (.docx→.jpg), AES-256 encrypted archives, nested ZIPs (depth testing).
-- **Nested JSON Exfiltration (MCP/API Payloads)** — Tests DLP detection of sensitive data inside deeply nested JSON structures used by AI agents (MCP), REST APIs, and GraphQL mutations. Server generates fresh PII/PCI/PHI data and wraps it at configurable nesting depth (2/4/6 levels). Tests whether network DLP can parse structured payloads to find hidden sensitive data.
-- **PDF Validation Report** — Auto-generated scorecard with score gauge, protocol coverage matrix, data category breakdown, gap analysis, and actionable recommendations. Client-side generation — no data leaves the browser.
+### 3. DLP Validator — 7-Step Workflow
+- **Step 1: Download Test Files** — Generate DOCX/PDF/XLSX/CSV with 100+ rows of realistic PII (SSN, Driver License, Passport), PCI (Luhn-valid Visa/MC/Amex), or PHI (ICD-10 codes, prescriptions) data. Includes sensitivity-labeled files (Confidential, Internal, Public). Each download is dynamically generated to prevent static hash fingerprinting. Also validates proxy/inline DLP by testing whether your DLP engine intercepts and inspects file content during HTTPS transit.
+- **Step 2: Evasive Payload Download** — Base64 encoding, renamed extensions (.docx→.jpg), AES-256 encrypted archives, nested ZIPs (1–10 layers for depth testing).
+- **Step 3: Label & Classification Check** *(optional)* — Deep-scan documents for Microsoft Information Protection (MIP) labels from DOCX/XLSX ZIP archives, PDF metadata dictionaries, content-level DLP pattern matching, and MD5/SHA-256 hashing.
+- **Step 4: Data Leakage Simulator** — Upload files over HTTP/HTTPS/FTP and send raw text POST payloads to test whether DLP blocks data in transit across all protocols. Detects and displays block status when a DLP agent intercepts browser uploads — the only free tool that distinguishes endpoint-level blocks from network/proxy blocks.
+- **Step 5: Advanced DLP Tests** — Tests DLP detection of sensitive data inside deeply nested JSON structures used by AI agents (MCP), REST APIs, and GraphQL mutations. Server generates fresh PII/PCI/PHI data and wraps it at configurable nesting depth (2/4/6 levels).
+- **Step 6: Generate & Share Report** — Auto-generated PDF scorecard with score gauge, protocol coverage matrix, data category breakdown, gap analysis, and actionable recommendations. Client-side generation — no data leaves the browser.
+- **Step 7: DLP Regex Builder** — Build and translate DLP regex patterns across 10 vendor formats (Forcepoint, Symantec, Palo Alto, Zscaler, Netskope, Trellix, Fortinet, Microsoft Purview, Proofpoint).
 
 ### 4. Threat Protection Lab
 - **EICAR Test Files** — Standard EICAR antivirus test file in multiple formats (.txt, .zip, .ps1).
